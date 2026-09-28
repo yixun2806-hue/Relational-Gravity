@@ -1,0 +1,296 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TestStatus {
+  created
+  a_in_progress
+  a_completed
+  b_in_progress
+  completed
+  expired
+}
+
+enum UnlockType {
+  FULL_RESULT
+  RELATION_CARD
+  PERSONAL_DETAIL
+  ADVANCED_RESULT
+  SPECIAL_BADGE
+}
+
+enum UnlockStatus {
+  granted
+  revoked
+}
+
+enum AdSessionStatus {
+  started
+  consumed
+  expired
+  cancelled
+}
+
+enum AccessRole {
+  buyer
+  guest
+}
+
+model User {
+  id           String   @id @default(uuid())
+  loginKey     String   @unique @map("login_key")
+  createdAt    DateTime @default(now()) @map("created_at")
+  lastSeenAt   DateTime @default(now()) @map("last_seen_at")
+  accessRole   AccessRole @default(buyer) @map("access_role")
+  accessCodeId String? @map("access_code_id")
+
+  sessions     Session[]
+  createdTests Test[]   @relation("TestCreator")
+  joinedTests  Test[]   @relation("TestParticipantB")
+  answers      TestAnswer[]
+  personalities PersonalityResult[]
+  unlocks      ResultUnlock[]
+  adSessions   AdSession[]
+  shares       ShareRecord[]
+  events       Event[]
+  redeemedCodes ReportAccessCode[] @relation("CodeRedeemer")
+  accessCode     ReportAccessCode? @relation("WebAccessCode", fields: [accessCodeId], references: [id], onDelete: SetNull)
+
+  @@index([accessCodeId])
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  tokenHash String   @map("token_hash")
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+model Question {
+  id         String            @id
+  version    Int
+  sortOrder  Int               @map("sort_order")
+  sceneLabel String            @map("scene_label")
+  stem       String
+  status     String            @default("active")
+  options    QuestionOption[]
+
+  @@index([version, sortOrder])
+  @@map("questions")
+}
+
+model QuestionOption {
+  id          String   @id @default(uuid())
+  questionId  String   @map("question_id")
+  key         String
+  text        String
+  scoreVector Json     @map("score_vector")
+  question    Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([questionId, key])
+  @@map("question_options")
+}
+
+model Test {
+  id             String     @id @default(uuid())
+  creatorId      String     @map("creator_id")
+  participantBId String?    @map("participant_b_id")
+  inviteCode     String     @unique @map("invite_code")
+  status         TestStatus @default(created)
+  questionVersion Int       @default(1) @map("question_version")
+  purchaseAccessCodeId String? @map("purchase_access_code_id")
+  expiresAt      DateTime   @map("expires_at")
+  createdAt      DateTime   @default(now()) @map("created_at")
+  completedAt    DateTime?  @map("completed_at")
+
+  creator        User       @relation("TestCreator", fields: [creatorId], references: [id])
+  participantB   User?      @relation("TestParticipantB", fields: [participantBId], references: [id])
+  answers        TestAnswer[]
+  personalities  PersonalityResult[]
+  relationship   RelationshipResult?
+  unlocks        ResultUnlock[]
+  adSessions     AdSession[]
+  shares         ShareRecord[]
+  events         Event[]
+  accessCode     ReportAccessCode?
+  purchaseAccessCode ReportAccessCode? @relation("TestStartCode", fields: [purchaseAccessCodeId], references: [id], onDelete: SetNull)
+
+  @@index([creatorId])
+  @@index([participantBId])
+  @@index([status])
+  @@index([purchaseAccessCodeId])
+  @@map("tests")
+}
+
+model Agent {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  createdAt DateTime  @default(now()) @map("created_at")
+  deletedAt DateTime? @map("deleted_at")
+  codes     ReportAccessCode[]
+
+  @@map("agents")
+}
+
+model ReportAccessCode {
+  id             String   @id @default(uuid())
+  code           String   @unique
+  priceFen       Int      @map("price_fen")
+  priceVariant   String   @map("price_variant")
+  channel        String
+  agentId        String?  @map("agent_id")
+  redeemedTestId String?  @unique @map("redeemed_test_id")
+  redeemedById   String?  @map("redeemed_by_id")
+  redeemedAt     DateTime? @map("redeemed_at")
+  isActive       Boolean  @default(true) @map("is_active")
+  useCount       Int      @default(0) @map("use_count")
+  lastUsedAt     DateTime? @map("last_used_at")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  agent        Agent? @relation(fields: [agentId], references: [id], onDelete: SetNull)
+  redeemedTest Test?  @relation(fields: [redeemedTestId], references: [id], onDelete: SetNull)
+  redeemedBy   User?  @relation("CodeRedeemer", fields: [redeemedById], references: [id], onDelete: SetNull)
+  webUsers     User[] @relation("WebAccessCode")
+  startedTests Test[] @relation("TestStartCode")
+
+  @@index([channel, priceVariant])
+  @@index([isActive, createdAt])
+  @@index([agentId, createdAt])
+  @@map("report_access_codes")
+}
+
+model TestAnswer {
+  id         String   @id @default(uuid())
+  testId     String   @map("test_id")
+  userId     String   @map("user_id")
+  questionId String   @map("question_id")
+  optionKey  String   @map("option_key")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  test Test @relation(fields: [testId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([testId, userId, questionId])
+  @@index([testId, userId])
+  @@map("test_answers")
+}
+
+model PersonalityResult {
+  id               String   @id @default(uuid())
+  testId           String   @map("test_id")
+  userId           String   @map("user_id")
+  role             String
+  personalityType  String   @map("personality_type")
+  secondaryType    String?  @map("secondary_type")
+  dimensionScores  Json     @map("dimension_scores")
+  typeScores       Json     @map("type_scores")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  test Test @relation(fields: [testId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([testId, userId])
+  @@map("personality_results")
+}
+
+model RelationshipResult {
+  id                 String   @id @default(uuid())
+  testId             String   @unique @map("test_id")
+  relationshipType   String   @map("relationship_type")
+  indices            Json
+  whoMore            Json     @map("who_more")
+  scene              Json
+  roast              String
+  advice             Json
+  content            Json
+  createdAt          DateTime @default(now()) @map("created_at")
+
+  test Test @relation(fields: [testId], references: [id], onDelete: Cascade)
+
+  @@map("relationship_results")
+}
+
+model ResultUnlock {
+  id           String       @id @default(uuid())
+  testId       String       @map("test_id")
+  userId       String       @map("user_id")
+  unlockType   UnlockType   @map("unlock_type")
+  unlockStatus UnlockStatus @default(granted) @map("unlock_status")
+  adSessionId  String?      @map("ad_session_id")
+  createdAt    DateTime     @default(now()) @map("created_at")
+
+  test Test @relation(fields: [testId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([testId, userId, unlockType])
+  @@index([userId])
+  @@map("result_unlocks")
+}
+
+model AdSession {
+  id         String          @id @default(uuid())
+  testId     String          @map("test_id")
+  userId     String          @map("user_id")
+  nonceHash  String          @map("nonce_hash")
+  status     AdSessionStatus @default(started)
+  createdAt  DateTime        @default(now()) @map("created_at")
+  expiresAt  DateTime        @map("expires_at")
+  consumedAt DateTime?       @map("consumed_at")
+
+  test Test @relation(fields: [testId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([nonceHash])
+  @@index([testId, userId])
+  @@map("ad_sessions")
+}
+
+model ShareRecord {
+  id        String   @id @default(uuid())
+  testId    String?  @map("test_id")
+  userId    String   @map("user_id")
+  shareType String   @map("share_type")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  test Test? @relation(fields: [testId], references: [id], onDelete: SetNull)
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([shareType, createdAt])
+  @@map("share_records")
+}
+
+model Event {
+  id         String   @id @default(uuid())
+  userId     String?  @map("user_id")
+  testId     String?  @map("test_id")
+  eventName  String   @map("event_name")
+  properties Json?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  test Test? @relation(fields: [testId], references: [id], onDelete: SetNull)
+
+  @@index([eventName, createdAt])
+  @@index([testId])
+  @@map("events")
+}
+
+model SystemSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("system_settings")
+}

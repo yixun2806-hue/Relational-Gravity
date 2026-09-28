@@ -1,0 +1,143 @@
+.shell.dossier-on{width:min(1080px,100%)}
+.dos-report{color:var(--ink);max-width:100%}
+.dos-sheet,.dos-title,.dos-tag,.dos-sub,.dos-lead,.dos-bio,.dos-file,.dos-evidence,.dos-advice,.dos-task,.dos-letter,.dos-roast{min-width:0;max-width:100%;overflow-wrap:break-word}
+
+.dos-sheet{position:relative;margin:22px 0;padding:32px 28px 26px;background:#faf7ef;border:1px solid rgba(35,67,100,.14);box-shadow:0 1px 0 rgba(255,255,255,.8) inset,0 14px 28px rgba(43,36,28,.06)}
+.dos-sheet::before{content:"";position:absolute;top:-9px;left:28px;width:78px;height:18px;background:rgba(175,200,232,.78);transform:rotate(-3deg);box-shadow:0 1px 0 rgba(255,255,255,.4) inset}
+.dos-sheet:nth-child(3n)::before{left:auto;right:36px;width:64px;background:rgba(232,214,184,.9);transform:rotate(4deg)}
+.dos-sheet:nth-child(4n)::before{left:46%;width:54px;background:rgba(217,184,170,.75);transform:rotate(-1deg)}
+.dos-no{margin:0 0 8px;color:#9a6a58;font:700 13px var(--hand);letter-spacing:.12em}
+.dos-sheet h2{margin:0 0 16px;font:700 28px/1.25 var(--serif)}
+.dos-sheet h2 span{display:inline-block;background:linear-gradient(transparent 62%,rgba(217,134,112,.35) 0)}
+
+.dos-cover{padding:42px 32px 34px;text-align:left;background:
+  radial-gradient(circle at 88% 12%,rgba(175,200,232,.35),transparent 28%),
+  linear-gradient(180deg,#fffdf8,#f7f1e6)}
+.dos-cover-top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+.dos-cover-top > div:first-child{min-width:0;flex:1}
+.dos-kicker{margin:0;color:#5577A8;font-size:12px;letter-spacing:.22em}
+.dos-file-no{margin:4px 0 0;color:#718095;font:15px var(--hand)}
+.dos-seal{flex:0 0 auto;min-width:108px;padding:10px 12px 8px;border:2px solid rgba(85,119,168,.75);border-radius:50%;color:#5577A8;text-align:center;transform:rotate(8deg);box-shadow:0 8px 0 rgba(85,119,168,.06)}
+.dos-seal strong{display:block;font:700 18px var(--hand)}
+.dos-seal small{display:block;margin-top:2px;font:12px var(--sans)}
+.dos-title{margin:22px 0 8px;font:700 clamp(40px,7vw,64px)/1.08 var(--serif);letter-spacing:-1px}
+.dos-tag{margin:0;color:#385b82;font:24px/1.45 var(--hand)}
+.dos-sub{margin:10px 0 0;max-width:36em;color:#294768;font-size:15px;line-height:1.75}
+.dos-lead{max-width:40em;margin:18px 0 0;padding-top:14px;border-top:1px dashed rgba(35,67,100,.2);color:#294768;font-size:15px;line-height:1.8}
+
+.dos-evidence{display:grid;grid-template-columns:42px minmax(0,1fr) auto;gap:8px 12px;align-items:start;margin:0;padding:11px 0;border-top:1px solid rgba(35,67,100,.1)}
+.dos-evidence b{color:#9a6a58;font:700 14px var(--hand)}
+.dos-evidence p{margin:0;font-size:15px;line-height:1.65}
+.dos-evidence em{margin:0;padding:2px 7px;border-radius:99px;color:#5577A8;background:rgba(85,119,168,.1);font:12px var(--sans);font-style:normal;white-space:nowrap}
+.dos-evidence.is-lead p{font-weight:700}
+.dos-evidence.is-late{opacity:.86}
+
+.dos-people{display:grid;gap:16px}
+.dos-file{position:relative;padding:18px 16px 16px;background:#fffdf8;border:1px solid rgba(35,67,100,.12);box-shadow:0 8px 18px rgba(43,36,28,.05)}
+.dos-file i{display:inline-block;margin:0 0 8px;padding:2px 8px;color:#fff;font:700 12px var(--sans);font-style:normal;letter-spacing:.08em}
+.dos-file.you i{background:#5577A8}
+.dos-file.ta i{background:#D98670}
+.dos-file.you{box-shadow:inset 0 7px 0 #5577A8,0 8px 18px rgba(43,36,28,.05)}
+.dos-file.ta{box-shadow:inset 0 7px 0 #D98670,0 8px 18px rgba(43,36,28,.05)}
+.dos-file h3{margin:0 0 6px;font:700 30px/1.2 var(--serif)}
+.hand{margin:0;color:#9a6a58;font:18px/1.45 var(--hand)}
+.dos-file .dos-bio{margin:12px 0 0;color:#294768;font-size:14px;line-height:1.75}
+
+.dos-core{display:grid;gap:12px;grid-template-columns:1fr;width:100%}
+.dos-index-card{padding:14px 14px 12px;background:#fffdf8;border:1px solid rgba(35,67,100,.1);box-shadow:0 6px 14px rgba(43,36,28,.04)}
+.dos-index-card header{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.dos-index-card h3{margin:0;font:700 18px var(--serif)}
+.dos-index-card b{color:#5577A8;font:700 22px Georgia,serif}
+.dos-index-card small{color:#718095}
+.dos-index-card p{margin:8px 0 0;color:#294768;font-size:13px;line-height:1.6}
+
+.dos-meter,.dos-track{height:7px;margin:7px 0 0;background:rgba(35,67,100,.1);overflow:hidden}
+.dos-meter i,.dos-track i{display:block;height:100%;min-width:0}
+.dos-meter i{background:#5577A8}
+.dos-track i.you{background:#5577A8}
+.dos-track i.ta{background:#D98670}
+.dos-who-top{display:flex;justify-content:space-between;font-size:13px}
+.dos-who-top span{font-weight:700}
+.dos-who-top .you{color:#5577A8}
+.dos-who-top .ta{color:#D98670}
+
+.dos-highlights,.dos-slips,.dos-grid,.dos-split-grid,.dos-advice-grid,.dos-balance{display:grid;gap:12px}
+.dos-note,.dos-slip,.dos-dim,.dos-who-card,.dos-case,.dos-check,.dos-risk,.dos-script,.dos-offer{padding:14px;background:#fffdf8;border:1px solid rgba(35,67,100,.1)}
+.dos-note{box-shadow:3px 4px 0 rgba(85,119,168,.08)}
+.dos-note:nth-child(2n){transform:rotate(-.4deg)}
+.dos-note:nth-child(3n){transform:rotate(.35deg)}
+.dos-slip{background:#f4efe4;box-shadow:2px 3px 0 rgba(154,106,88,.12)}
+.dos-slip h3,.dos-note h3,.dos-dim h3,.dos-who-card h3,.dos-case h3,.dos-check h3,.dos-risk h3,.dos-script h3,.dos-offer h3{margin:0 0 8px;font:700 16px/1.4 var(--serif)}
+.dos-dim p,.dos-slip p,.dos-note p,.dos-who-card p,.dos-case p,.dos-check p,.dos-risk p{margin:6px 0 0;color:#294768;font-size:13px;line-height:1.65}
+
+.dos-index{padding:8px 0;border-top:1px solid rgba(35,67,100,.1)}
+.dos-index summary{display:flex;justify-content:space-between;gap:12px;cursor:pointer;font-weight:700}
+.dos-index small{display:block;color:#718095;font-weight:400}
+
+.dos-play{padding:6px 4px 2px}
+.dos-line-say{display:grid;grid-template-columns:42px minmax(0,1fr);gap:8px;margin:0 0 10px;line-height:1.7}
+.dos-line-say span{font:700 13px var(--hand)}
+.dos-line-say.you span{color:#5577A8}
+.dos-line-say.ta span{color:#D98670}
+.dos-punch{margin:8px 0 0;color:#9a6a58;font:20px/1.6 var(--hand)}
+
+.dos-roast-wrap{background:transparent;border:0;box-shadow:none;padding:8px 8px 0}
+.dos-roast-wrap::before{display:none}
+.dos-roast{max-width:34em;margin:8px auto;padding:22px 20px 18px;background:#fff4c8;color:#385b82;font:22px/1.7 var(--hand);box-shadow:0 10px 18px rgba(43,36,28,.08);transform:rotate(-1.2deg)}
+
+.dos-cycle{margin:0;padding:0;list-style:none}
+.dos-cycle li{margin:0;padding:10px 0 10px 16px;border-left:1px solid rgba(35,67,100,.18);line-height:1.7}
+.dos-cycle .you{color:#5577A8}
+.dos-cycle .ta{color:#9a5548}
+.dos-cycle .cut{margin-left:-2px;border-left:3px solid #D98670;background:rgba(217,134,112,.08);font-weight:700}
+.dos-cycle.is-soft .cut{border-left-color:#5577A8;background:rgba(85,119,168,.08)}
+
+.dos-risk.is-low{background:#fffdf8}
+.dos-risk.is-medium{background:#f8efd8}
+.dos-risk.is-high{background:#f8e7e1}
+.dos-flag{margin:0 0 6px;color:#9a6a58;font:16px var(--hand)}
+
+.dos-advice{margin:0;padding:12px 14px;background:#fffdf8;border:1px solid rgba(35,67,100,.1);line-height:1.7}
+.dos-advice.you{border-left:4px solid #5577A8}
+.dos-advice.ta{border-left:4px solid #D98670}
+.dos-advice.pair{background:#f4efe4}
+.dos-task{display:grid;grid-template-columns:46px minmax(0,1fr);gap:10px;align-items:start;margin:0 0 10px;padding:12px;background:#fffdf8;border:1px dashed rgba(85,119,168,.35)}
+.dos-task b{color:#5577A8;font:700 18px var(--hand)}
+
+.dos-letter{padding:22px 8px 8px 18px;border-left:0;background:
+  linear-gradient(#e7e0d2 1px,transparent 1px) 0 0/100% 32px,
+  #fffdf8;font:21px/32px var(--hand);color:#385b82;box-shadow:0 10px 20px rgba(43,36,28,.05)}
+.dos-empty{color:#718095;line-height:1.7}
+.dos-foot{color:#8a98aa;font-size:12px;line-height:1.7;text-align:center}
+.dos-more{margin-top:8px;border:0;background:none;color:#5577A8;font:18px var(--hand);cursor:pointer}
+.dos-script.is-extra{display:none}
+.dos-sheet.is-open .dos-script.is-extra{display:block}
+.dos-script blockquote{margin:8px 0;padding:8px 12px;background:rgba(85,119,168,.06);border-left:3px solid #5577A8}
+.dos-script blockquote.ta{background:rgba(217,134,112,.1);border-left-color:#D98670}
+.dos-script blockquote span{display:block;margin-bottom:4px;font:700 12px var(--hand)}
+.dos-tie{margin:0 0 6px;color:#9a6a58;font:16px var(--hand)}
+
+@media(min-width:420px){
+  .dos-core{grid-template-columns:1fr 1fr}
+}
+@media(min-width:1024px){
+  .dos-core{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media(min-width:960px){
+  .dos-people,.dos-highlights,.dos-slips,.dos-grid,.dos-split-grid,.dos-advice-grid,.dos-balance,.dos-scripts{grid-template-columns:1fr 1fr}
+  .dos-script.is-extra{display:block}
+  .dos-more{display:none}
+  .dos-cover{padding-right:48px}
+}
+@media(max-width:520px){
+  .dos-sheet{margin:16px 0;padding:26px 16px 18px}
+  .dos-title{font-size:34px;letter-spacing:0}
+  .dos-cover{padding:28px 16px 22px}
+  .dos-cover-top{align-items:center}
+  .dos-seal{min-width:88px;padding:8px 8px 6px;transform:rotate(3deg);margin-right:2px}
+  .dos-seal strong{font-size:16px}
+  .dos-evidence{grid-template-columns:32px minmax(0,1fr)}
+  .dos-evidence em{grid-column:2}
+  .dos-note:nth-child(n),.dos-slip:nth-child(n),.dos-roast{transform:none}
+}
+@media(prefers-reduced-motion:reduce){.dos-meter i,.dos-track i,.view{transition:none;animation:none}}

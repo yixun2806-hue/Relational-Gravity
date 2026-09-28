@@ -1,0 +1,37 @@
+export const ErrorCodes = {
+  BAD_REQUEST: 40000,
+  INVITE_NOT_FOUND: 40001,
+  INVITE_EXPIRED: 40002,
+  INVITE_TAKEN: 40003,
+  JOIN_OWN_TEST: 40004,
+  INCOMPLETE_ANSWERS: 40005,
+  ALREADY_COMPLETED: 40006,
+  QUESTION_VERSION: 40007,
+  INVALID_STATE: 40008,
+  AD_SESSION_INVALID: 40010,
+  AD_NONCE_USED: 40011,
+  AD_NOT_FINISHED: 40012,
+  ALREADY_UNLOCKED: 40013,
+  ACCESS_CODE_INVALID: 40014,
+  ACCESS_CODE_USED: 40015,
+  UNAUTHORIZED: 40101,
+  FORBIDDEN: 40301,
+  NOT_UNLOCKED: 40302,
+  NOT_FOUND: 40401,
+  RELATIONSHIP_PENDING: 40901,
+  AGENT_EXISTS: 40902,
+  RATE_LIMIT: 42901,
+  UNLOCK_RATE_LIMIT: 42902,
+  INTERNAL: 50000,
+} as const;
+
+export class AppError extends Error {
+  constructor(
+    public readonly code: number,
+    message: string,
+    public readonly statusCode = 400,
+  ) {
+    super(message);
+    this.name = "AppError";
+  }
+}

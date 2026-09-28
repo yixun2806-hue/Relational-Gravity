@@ -1,0 +1,675 @@
+{
+  "seed": 20260923,
+  "personalSamples": 100000,
+  "pairSamples": 50000,
+  "personalities": [
+    {
+      "id": "stubborn_free_cat",
+      "name": "嘴硬自由猫",
+      "count": 9410,
+      "percentage": 9.41,
+      "eligible": 0,
+      "borderline": 0,
+      "weak": 0
+    },
+    {
+      "id": "solar_clingy_dog",
+      "name": "太阳能黏人狗",
+      "count": 5764,
+      "percentage": 5.76,
+      "eligible": 0,
+      "borderline": 0,
+      "weak": 0
+    },
+    {
+      "id": "overthink_master",
+      "name": "已读乱想大师",
+      "count": 8496,
+      "percentage": 8.5,
+      "eligible": 0,
+      "borderline": 0,
+      "weak": 0
+    },
+    {
+      "id": "human_buffer",
+      "name": "人间缓冲器",
+      "count": 11017,
+      "percentage": 11.02,
+      "eligible": 0,
+      "borderline": 0,
+      "weak": 0
+    },
+    {
+      "id": "relation_pm",
+      "name": "关系项目经理",
+      "count": 6043,
+      "percentage": 6.04,
+      "eligible": 0,
+      "borderline": 0,
+      "weak": 0
+    },
+    {
+      "id": "easygoing",
+      "name": "快乐随缘派",
+      "count": 24173,
+      "percentage": 24.17,
+      "eligible": 0,
+      "borderline": 0,
+      "weak": 0
+    },
+    {
+      "id": "spark_extrovert",
+      "name": "火花显眼包",
+      "count": 6123,
+      "percentage": 6.12,
+      "eligible": 0,
+      "borderline": 0,
+      "weak": 0
+    },
+    {
+      "id": "silent_observer",
+      "name": "沉默观察员",
+      "count": 3737,
+      "percentage": 3.74,
+      "eligible": 0,
+      "borderline": 0,
+      "weak": 0
+    },
+    {
+      "id": "emotion_radar",
+      "name": "情绪雷达",
+      "count": 2816,
+      "percentage": 2.82,
+      "eligible": 0,
+      "borderline": 0,
+      "weak": 0
+    },
+    {
+      "id": "human_powerbank",
+      "name": "人间充电宝",
+      "count": 1437,
+      "percentage": 1.44,
+      "eligible": 0,
+      "borderline": 0,
+      "weak": 0
+    },
+    {
+      "id": "boundary_guard",
+      "name": "边界守门员",
+      "count": 8542,
+      "percentage": 8.54,
+      "eligible": 0,
+      "borderline": 0,
+      "weak": 0
+    },
+    {
+      "id": "calm_defuser",
+      "name": "冷静拆弹专家",
+      "count": 6626,
+      "percentage": 6.63,
+      "eligible": 0,
+      "borderline": 0,
+      "weak": 0
+    },
+    {
+      "id": "brain_drift",
+      "name": "脑回路漂移王",
+      "count": 2077,
+      "percentage": 2.08,
+      "eligible": 0,
+      "borderline": 0,
+      "weak": 0
+    },
+    {
+      "id": "relation_scout",
+      "name": "关系侦察兵",
+      "count": 1389,
+      "percentage": 1.39,
+      "eligible": 0,
+      "borderline": 0,
+      "weak": 0
+    },
+    {
+      "id": "whatever_bro",
+      "name": "嘴上随便哥",
+      "count": 1586,
+      "percentage": 1.59,
+      "eligible": 0,
+      "borderline": 0,
+      "weak": 0
+    },
+    {
+      "id": "soft_defense_tower",
+      "name": "心软防御塔",
+      "count": 764,
+      "percentage": 0.76,
+      "eligible": 0,
+      "borderline": 0,
+      "weak": 0
+    }
+  ],
+  "relationships": [
+    {
+      "id": "iceberg_sun",
+      "name": "冰山 × 小太阳",
+      "count": 2265,
+      "percentage": 4.53,
+      "eligible": 286,
+      "borderline": 1594,
+      "weak": 385
+    },
+    {
+      "id": "stubborn_soft",
+      "name": "嘴硬 × 心软",
+      "count": 1328,
+      "percentage": 2.66,
+      "eligible": 4,
+      "borderline": 1006,
+      "weak": 318
+    },
+    {
+      "id": "cat_dog",
+      "name": "猫 × 狗",
+      "count": 3553,
+      "percentage": 7.11,
+      "eligible": 75,
+      "borderline": 2534,
+      "weak": 944
+    },
+    {
+      "id": "plan_go_with_flow",
+      "name": "计划 × 随缘",
+      "count": 440,
+      "percentage": 0.88,
+      "eligible": 56,
+      "borderline": 290,
+      "weak": 94
+    },
+    {
+      "id": "detective_missing",
+      "name": "侦探 × 失踪人口",
+      "count": 3245,
+      "percentage": 6.49,
+      "eligible": 317,
+      "borderline": 2513,
+      "weak": 415
+    },
+    {
+      "id": "clingy_free",
+      "name": "黏人 × 自由",
+      "count": 795,
+      "percentage": 1.59,
+      "eligible": 31,
+      "borderline": 530,
+      "weak": 234
+    },
+    {
+      "id": "rational_emotional",
+      "name": "理性 × 感性",
+      "count": 1187,
+      "percentage": 2.37,
+      "eligible": 36,
+      "borderline": 791,
+      "weak": 360
+    },
+    {
+      "id": "active_passive",
+      "name": "主动 × 被动",
+      "count": 419,
+      "percentage": 0.84,
+      "eligible": 36,
+      "borderline": 292,
+      "weak": 91
+    },
+    {
+      "id": "social_battery",
+      "name": "社牛 × 社恐",
+      "count": 890,
+      "percentage": 1.78,
+      "eligible": 63,
+      "borderline": 668,
+      "weak": 159
+    },
+    {
+      "id": "spotlight_lowkey",
+      "name": "显眼包 × 低调王",
+      "count": 4749,
+      "percentage": 9.5,
+      "eligible": 258,
+      "borderline": 3531,
+      "weak": 960
+    },
+    {
+      "id": "radar_wood",
+      "name": "情绪雷达 × 情绪木头",
+      "count": 6106,
+      "percentage": 12.21,
+      "eligible": 1042,
+      "borderline": 4368,
+      "weak": 696
+    },
+    {
+      "id": "pm_slacker",
+      "name": "关系项目经理 × 快乐摸鱼王",
+      "count": 2329,
+      "percentage": 4.66,
+      "eligible": 80,
+      "borderline": 1515,
+      "weak": 734
+    },
+    {
+      "id": "powder_extinguisher",
+      "name": "火药桶 × 灭火器",
+      "count": 423,
+      "percentage": 0.85,
+      "eligible": 0,
+      "borderline": 157,
+      "weak": 266
+    },
+    {
+      "id": "ice_ice",
+      "name": "冰山 × 冰山",
+      "count": 2002,
+      "percentage": 4,
+      "eligible": 23,
+      "borderline": 1260,
+      "weak": 719
+    },
+    {
+      "id": "sun_sun",
+      "name": "小太阳 × 小太阳",
+      "count": 337,
+      "percentage": 0.67,
+      "eligible": 0,
+      "borderline": 117,
+      "weak": 220
+    },
+    {
+      "id": "spotlight_spotlight",
+      "name": "显眼包 × 显眼包",
+      "count": 4,
+      "percentage": 0.01,
+      "eligible": 0,
+      "borderline": 0,
+      "weak": 4
+    },
+    {
+      "id": "rumination_comfort",
+      "name": "内耗王 × 安抚王",
+      "count": 571,
+      "percentage": 1.14,
+      "eligible": 6,
+      "borderline": 333,
+      "weak": 232
+    },
+    {
+      "id": "hesitate_decide",
+      "name": "纠结王 × 决策王",
+      "count": 10121,
+      "percentage": 20.24,
+      "eligible": 2001,
+      "borderline": 7040,
+      "weak": 1080
+    },
+    {
+      "id": "grudge_forget",
+      "name": "记仇王 × 转头忘",
+      "count": 2544,
+      "percentage": 5.09,
+      "eligible": 41,
+      "borderline": 1799,
+      "weak": 704
+    },
+    {
+      "id": "talk_now_later",
+      "name": "主动沟通 × 冷处理",
+      "count": 1536,
+      "percentage": 3.07,
+      "eligible": 14,
+      "borderline": 988,
+      "weak": 534
+    },
+    {
+      "id": "sensitive_stable",
+      "name": "高敏感 × 高稳定",
+      "count": 900,
+      "percentage": 1.8,
+      "eligible": 8,
+      "borderline": 524,
+      "weak": 368
+    },
+    {
+      "id": "independent_independent",
+      "name": "高独立 × 高独立",
+      "count": 608,
+      "percentage": 1.22,
+      "eligible": 7,
+      "borderline": 302,
+      "weak": 299
+    },
+    {
+      "id": "together_together",
+      "name": "高陪伴 × 高陪伴",
+      "count": 810,
+      "percentage": 1.62,
+      "eligible": 19,
+      "borderline": 454,
+      "weak": 337
+    },
+    {
+      "id": "abstract_abstract",
+      "name": "高抽象 × 高抽象",
+      "count": 2838,
+      "percentage": 5.68,
+      "eligible": 143,
+      "borderline": 1669,
+      "weak": 1026
+    }
+  ],
+  "personalityHighest": {
+    "id": "easygoing",
+    "name": "快乐随缘派",
+    "count": 24173,
+    "percentage": 24.17,
+    "eligible": 0,
+    "borderline": 0,
+    "weak": 0
+  },
+  "personalityLowest": {
+    "id": "soft_defense_tower",
+    "name": "心软防御塔",
+    "count": 764,
+    "percentage": 0.76,
+    "eligible": 0,
+    "borderline": 0,
+    "weak": 0
+  },
+  "relationshipHighest": {
+    "id": "hesitate_decide",
+    "name": "纠结王 × 决策王",
+    "count": 10121,
+    "percentage": 20.24,
+    "eligible": 2001,
+    "borderline": 7040,
+    "weak": 1080
+  },
+  "relationshipLowest": {
+    "id": "spotlight_spotlight",
+    "name": "显眼包 × 显眼包",
+    "count": 4,
+    "percentage": 0.01,
+    "eligible": 0,
+    "borderline": 0,
+    "weak": 4
+  },
+  "personalityUnreachable": [],
+  "relationshipUnreachable": [],
+  "tiers": {
+    "eligible": 4546,
+    "borderline": 34275,
+    "weak": 11179
+  },
+  "tierRates": {
+    "eligible": 9.09,
+    "borderline": 68.55,
+    "weak": 22.36
+  },
+  "weakFallback": [
+    {
+      "id": "hesitate_decide",
+      "name": "纠结王 × 决策王",
+      "count": 1080,
+      "percentage": 9.66,
+      "eligible": 2001,
+      "borderline": 7040,
+      "weak": 1080
+    },
+    {
+      "id": "abstract_abstract",
+      "name": "高抽象 × 高抽象",
+      "count": 1026,
+      "percentage": 9.18,
+      "eligible": 143,
+      "borderline": 1669,
+      "weak": 1026
+    },
+    {
+      "id": "spotlight_lowkey",
+      "name": "显眼包 × 低调王",
+      "count": 960,
+      "percentage": 8.59,
+      "eligible": 258,
+      "borderline": 3531,
+      "weak": 960
+    },
+    {
+      "id": "cat_dog",
+      "name": "猫 × 狗",
+      "count": 944,
+      "percentage": 8.44,
+      "eligible": 75,
+      "borderline": 2534,
+      "weak": 944
+    },
+    {
+      "id": "pm_slacker",
+      "name": "关系项目经理 × 快乐摸鱼王",
+      "count": 734,
+      "percentage": 6.57,
+      "eligible": 80,
+      "borderline": 1515,
+      "weak": 734
+    },
+    {
+      "id": "ice_ice",
+      "name": "冰山 × 冰山",
+      "count": 719,
+      "percentage": 6.43,
+      "eligible": 23,
+      "borderline": 1260,
+      "weak": 719
+    },
+    {
+      "id": "grudge_forget",
+      "name": "记仇王 × 转头忘",
+      "count": 704,
+      "percentage": 6.3,
+      "eligible": 41,
+      "borderline": 1799,
+      "weak": 704
+    },
+    {
+      "id": "radar_wood",
+      "name": "情绪雷达 × 情绪木头",
+      "count": 696,
+      "percentage": 6.23,
+      "eligible": 1042,
+      "borderline": 4368,
+      "weak": 696
+    },
+    {
+      "id": "talk_now_later",
+      "name": "主动沟通 × 冷处理",
+      "count": 534,
+      "percentage": 4.78,
+      "eligible": 14,
+      "borderline": 988,
+      "weak": 534
+    },
+    {
+      "id": "detective_missing",
+      "name": "侦探 × 失踪人口",
+      "count": 415,
+      "percentage": 3.71,
+      "eligible": 317,
+      "borderline": 2513,
+      "weak": 415
+    },
+    {
+      "id": "iceberg_sun",
+      "name": "冰山 × 小太阳",
+      "count": 385,
+      "percentage": 3.44,
+      "eligible": 286,
+      "borderline": 1594,
+      "weak": 385
+    },
+    {
+      "id": "sensitive_stable",
+      "name": "高敏感 × 高稳定",
+      "count": 368,
+      "percentage": 3.29,
+      "eligible": 8,
+      "borderline": 524,
+      "weak": 368
+    },
+    {
+      "id": "rational_emotional",
+      "name": "理性 × 感性",
+      "count": 360,
+      "percentage": 3.22,
+      "eligible": 36,
+      "borderline": 791,
+      "weak": 360
+    },
+    {
+      "id": "together_together",
+      "name": "高陪伴 × 高陪伴",
+      "count": 337,
+      "percentage": 3.01,
+      "eligible": 19,
+      "borderline": 454,
+      "weak": 337
+    },
+    {
+      "id": "stubborn_soft",
+      "name": "嘴硬 × 心软",
+      "count": 318,
+      "percentage": 2.84,
+      "eligible": 4,
+      "borderline": 1006,
+      "weak": 318
+    },
+    {
+      "id": "independent_independent",
+      "name": "高独立 × 高独立",
+      "count": 299,
+      "percentage": 2.67,
+      "eligible": 7,
+      "borderline": 302,
+      "weak": 299
+    },
+    {
+      "id": "powder_extinguisher",
+      "name": "火药桶 × 灭火器",
+      "count": 266,
+      "percentage": 2.38,
+      "eligible": 0,
+      "borderline": 157,
+      "weak": 266
+    },
+    {
+      "id": "clingy_free",
+      "name": "黏人 × 自由",
+      "count": 234,
+      "percentage": 2.09,
+      "eligible": 31,
+      "borderline": 530,
+      "weak": 234
+    },
+    {
+      "id": "rumination_comfort",
+      "name": "内耗王 × 安抚王",
+      "count": 232,
+      "percentage": 2.08,
+      "eligible": 6,
+      "borderline": 333,
+      "weak": 232
+    },
+    {
+      "id": "sun_sun",
+      "name": "小太阳 × 小太阳",
+      "count": 220,
+      "percentage": 1.97,
+      "eligible": 0,
+      "borderline": 117,
+      "weak": 220
+    },
+    {
+      "id": "social_battery",
+      "name": "社牛 × 社恐",
+      "count": 159,
+      "percentage": 1.42,
+      "eligible": 63,
+      "borderline": 668,
+      "weak": 159
+    },
+    {
+      "id": "plan_go_with_flow",
+      "name": "计划 × 随缘",
+      "count": 94,
+      "percentage": 0.84,
+      "eligible": 56,
+      "borderline": 290,
+      "weak": 94
+    },
+    {
+      "id": "active_passive",
+      "name": "主动 × 被动",
+      "count": 91,
+      "percentage": 0.81,
+      "eligible": 36,
+      "borderline": 292,
+      "weak": 91
+    },
+    {
+      "id": "spotlight_spotlight",
+      "name": "显眼包 × 显眼包",
+      "count": 4,
+      "percentage": 0.04,
+      "eligible": 0,
+      "borderline": 0,
+      "weak": 4
+    }
+  ],
+  "percentiles": {
+    "score": [
+      31,
+      36,
+      42,
+      50,
+      58
+    ],
+    "eligibility": [
+      31,
+      36,
+      42,
+      50,
+      58
+    ],
+    "competitionScore": [
+      25.3812,
+      29.9303,
+      36.0701,
+      43.5834,
+      51.7367
+    ],
+    "margin": [
+      1,
+      2,
+      5,
+      9,
+      14
+    ],
+    "evidenceStrength": [
+      31,
+      36.6,
+      43.4,
+      50.8,
+      58
+    ]
+  },
+  "warnings": [],
+  "failures": [],
+  "ok": true
+}

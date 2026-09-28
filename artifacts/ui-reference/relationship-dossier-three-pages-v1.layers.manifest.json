@@ -1,0 +1,54 @@
+{
+  "source": "relationship-dossier-three-pages-v1.png",
+  "source_size": { "width": 1536, "height": 1024 },
+  "coordinate_system": "source crop pixels; scaled_bbox uses a 750rpx-wide page",
+  "screens": {
+    "home": {
+      "source_crop": { "x": 26, "y": 4, "width": 461, "height": 1015 },
+      "scaled_size": { "width": 750, "height": 1651 },
+      "layers": [
+        { "id": "brand", "type": "text", "source_bbox": { "x": 20, "y": 58, "width": 180, "height": 32 }, "scaled_bbox": { "x": 33, "y": 94, "width": 293, "height": 52 }, "z_index": 30 },
+        { "id": "hero-title", "type": "text", "source_bbox": { "x": 29, "y": 120, "width": 405, "height": 139 }, "scaled_bbox": { "x": 47, "y": 195, "width": 659, "height": 226 }, "z_index": 30 },
+        { "id": "hero-underline", "type": "vector", "source_bbox": { "x": 27, "y": 268, "width": 365, "height": 26 }, "scaled_bbox": { "x": 44, "y": 436, "width": 594, "height": 42 }, "z_index": 31 },
+        { "id": "hero-note", "type": "text", "source_bbox": { "x": 27, "y": 317, "width": 196, "height": 85 }, "scaled_bbox": { "x": 44, "y": 516, "width": 319, "height": 138 }, "z_index": 40 },
+        { "id": "couple-collage", "type": "bitmap", "source_bbox": { "x": 145, "y": 287, "width": 316, "height": 351 }, "scaled_bbox": { "x": 236, "y": 467, "width": 514, "height": 571 }, "z_index": 30, "asset": "/assets/relationship-ui-assets-v2/01-home-couple-polaroid.webp" },
+        { "id": "primary-cta", "type": "control", "source_bbox": { "x": 26, "y": 641, "width": 408, "height": 79 }, "scaled_bbox": { "x": 42, "y": 1043, "width": 664, "height": 129 }, "z_index": 50 },
+        { "id": "feature-row", "type": "group", "source_bbox": { "x": 68, "y": 749, "width": 317, "height": 75 }, "scaled_bbox": { "x": 111, "y": 1219, "width": 516, "height": 122 }, "z_index": 30 },
+        { "id": "bottom-note", "type": "text-surface", "source_bbox": { "x": 24, "y": 852, "width": 250, "height": 125 }, "scaled_bbox": { "x": 39, "y": 1386, "width": 407, "height": 203 }, "z_index": 20 },
+        { "id": "bottom-stamp", "type": "bitmap", "source_bbox": { "x": 268, "y": 843, "width": 170, "height": 112 }, "scaled_bbox": { "x": 436, "y": 1371, "width": 277, "height": 182 }, "z_index": 35, "asset": "/assets/relationship-ui-final/03-relationship-stamp-transparent.webp" },
+        { "id": "bottom-pen", "type": "bitmap", "source_bbox": { "x": 286, "y": 902, "width": 175, "height": 108 }, "scaled_bbox": { "x": 465, "y": 1467, "width": 285, "height": 176 }, "z_index": 40, "asset": "/assets/relationship-ui-final/navy-pen-transparent.webp" }
+      ]
+    },
+    "personal": {
+      "source_crop": { "x": 531, "y": 4, "width": 473, "height": 1015 },
+      "scaled_size": { "width": 750, "height": 1609 },
+      "layers": [
+        { "id": "result-sheet", "type": "surface", "source_bbox": { "x": 13, "y": 103, "width": 450, "height": 662 }, "scaled_bbox": { "x": 21, "y": 163, "width": 713, "height": 1050 }, "z_index": 20 },
+        { "id": "file-label", "type": "text-surface", "source_bbox": { "x": 58, "y": 118, "width": 211, "height": 67 }, "scaled_bbox": { "x": 92, "y": 187, "width": 335, "height": 106 }, "z_index": 40 },
+        { "id": "personality-name", "type": "text", "source_bbox": { "x": 59, "y": 207, "width": 249, "height": 72 }, "scaled_bbox": { "x": 94, "y": 328, "width": 395, "height": 114 }, "z_index": 40 },
+        { "id": "hand-note", "type": "text", "source_bbox": { "x": 329, "y": 201, "width": 126, "height": 114 }, "scaled_bbox": { "x": 522, "y": 319, "width": 200, "height": 181 }, "z_index": 42 },
+        { "id": "metric-1", "type": "group", "source_bbox": { "x": 55, "y": 402, "width": 390, "height": 77 }, "scaled_bbox": { "x": 87, "y": 637, "width": 618, "height": 122 }, "z_index": 40 },
+        { "id": "metric-2", "type": "group", "source_bbox": { "x": 55, "y": 491, "width": 390, "height": 77 }, "scaled_bbox": { "x": 87, "y": 778, "width": 618, "height": 122 }, "z_index": 40 },
+        { "id": "metric-3", "type": "group", "source_bbox": { "x": 55, "y": 579, "width": 390, "height": 77 }, "scaled_bbox": { "x": 87, "y": 918, "width": 618, "height": 122 }, "z_index": 40 },
+        { "id": "understood-note", "type": "text-surface", "source_bbox": { "x": 42, "y": 678, "width": 263, "height": 96 }, "scaled_bbox": { "x": 67, "y": 1075, "width": 417, "height": 152 }, "z_index": 35 },
+        { "id": "relationship-stamp", "type": "bitmap", "source_bbox": { "x": 329, "y": 666, "width": 144, "height": 105 }, "scaled_bbox": { "x": 522, "y": 1056, "width": 228, "height": 166 }, "z_index": 40, "asset": "/assets/relationship-ui-final/03-relationship-stamp-transparent.webp" },
+        { "id": "invite-cta", "type": "control", "source_bbox": { "x": 83, "y": 839, "width": 306, "height": 59 }, "scaled_bbox": { "x": 132, "y": 1330, "width": 485, "height": 94 }, "z_index": 40 }
+      ]
+    },
+    "report": {
+      "source_crop": { "x": 1054, "y": 4, "width": 461, "height": 1015 },
+      "scaled_size": { "width": 750, "height": 1651 },
+      "layers": [
+        { "id": "blue-folder", "type": "bitmap", "source_bbox": { "x": 0, "y": 98, "width": 355, "height": 400 }, "scaled_bbox": { "x": 0, "y": 159, "width": 578, "height": 651 }, "z_index": 10, "asset": "/assets/relationship-ui-final/08-blue-file-folder-transparent.webp" },
+        { "id": "report-paper", "type": "surface", "source_bbox": { "x": 17, "y": 163, "width": 431, "height": 651 }, "scaled_bbox": { "x": 28, "y": 265, "width": 701, "height": 1059 }, "z_index": 20 },
+        { "id": "binder-clip", "type": "bitmap", "source_bbox": { "x": 329, "y": 97, "width": 108, "height": 111 }, "scaled_bbox": { "x": 535, "y": 158, "width": 176, "height": 181 }, "z_index": 50, "asset": "/assets/relationship-ui-final/02-binder-clip-transparent.webp" },
+        { "id": "report-heading", "type": "text", "source_bbox": { "x": 73, "y": 193, "width": 358, "height": 117 }, "scaled_bbox": { "x": 119, "y": 314, "width": 582, "height": 190 }, "z_index": 30 },
+        { "id": "benefits", "type": "group", "source_bbox": { "x": 53, "y": 397, "width": 342, "height": 195 }, "scaled_bbox": { "x": 86, "y": 646, "width": 556, "height": 317 }, "z_index": 30 },
+        { "id": "price", "type": "text", "source_bbox": { "x": 56, "y": 611, "width": 196, "height": 98 }, "scaled_bbox": { "x": 91, "y": 994, "width": 319, "height": 159 }, "z_index": 30 },
+        { "id": "purchase-cta", "type": "control", "source_bbox": { "x": 46, "y": 727, "width": 373, "height": 64 }, "scaled_bbox": { "x": 75, "y": 1183, "width": 607, "height": 104 }, "z_index": 30 },
+        { "id": "growth-note", "type": "text-surface", "source_bbox": { "x": 0, "y": 842, "width": 252, "height": 123 }, "scaled_bbox": { "x": 0, "y": 1370, "width": 410, "height": 200 }, "z_index": 30 },
+        { "id": "sea-polaroid", "type": "bitmap", "source_bbox": { "x": 230, "y": 818, "width": 218, "height": 187 }, "scaled_bbox": { "x": 374, "y": 1331, "width": 355, "height": 304 }, "z_index": 35, "asset": "/assets/relationship-ui-assets-v2/02-sea-couple-polaroid.webp" }
+      ]
+    }
+  }
+}

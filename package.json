@@ -1,0 +1,16 @@
+{
+  "name": "relationship-personality",
+  "private": true,
+  "description": "关系引力 — 手机自适应网页 + Node.js API",
+  "scripts": {
+    "dev": "npm run dev --prefix server",
+    "lint": "npm run lint --prefix server",
+    "typecheck": "npm run typecheck --prefix server",
+    "test": "npm run test --prefix server",
+    "build": "npm run build --prefix server",
+    "algorithm:distribution": "npm run algorithm:distribution --prefix server --"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

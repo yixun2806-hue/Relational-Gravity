@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 64" role="img" aria-label="Relation Lab s��">
+  <circle cx="18" cy="42" r="11" fill="#2f6fce"/>
+  <circle cx="46" cy="20" r="13" fill="#16324f"/>
+  <path d="M27 35c8-6 12-10 16-12" fill="none" stroke="#2f6fce" stroke-width="3.2" stroke-linecap="round"/>
+  <text x="78" y="24" fill="#6b7c8d" font-family="system-ui, sans-serif" font-size="11" letter-spacing="2.4">RELATION LAB</text>
+  <text x="78" y="48" fill="#16324f" font-family="Songti SC, STSong, serif" font-size="22" font-weight="700">s��</text>
+</svg>
