@@ -54,8 +54,9 @@ describe("phase 2 archive", () => {
       expect(report.conflictCycle.breakpoint.length).toBeGreaterThan(4);
       expect(report.dynamicScene.lines.length).toBeGreaterThan(1);
       expect(report.dynamicRoast).not.toMatch(/精神病|废物|垃圾|有病/);
-      expect(report.finalSummary.length).toBeGreaterThanOrEqual(300);
-      expect(report.finalSummary.length).toBeLessThanOrEqual(600);
+      expect(report.finalSummary.length).toBeGreaterThanOrEqual(180);
+      expect(report.finalSummary.length).toBeLessThanOrEqual(320);
+      expect(report.finalSummary).not.toMatch(/关系分数|成立度|目前比较突出|从数据来看|从指标来看/);
       expect(report.relationshipCandidates[0]?.typeId).toBe(report.relationshipType);
       for (const item of report.dimensionComparison) {
         expect(item.aValue).toBeGreaterThanOrEqual(0);
@@ -85,8 +86,9 @@ describe("phase 2 archive", () => {
     expect(indexLevel(80).label).toBe("很高");
     const weak = buildPairReportFromScores(vector(50), vector(50));
     expect(weak.relationshipConfidence.wordingStrength).toBe("tentative");
-    expect(weak.finalSummary).toContain("更接近");
+    expect(weak.finalSummary).toContain("这还不是定论");
     expect(weak.finalSummary).not.toContain("很典型");
+    expect(weak.finalSummary).not.toMatch(/关系分数|成立度/);
     const source = RELATIONSHIP_FIXTURES[0]!;
     let borderline: ReturnType<typeof buildPairReportFromScores> | undefined;
     for (const ratio of [0.35, 0.45, 0.55, 0.65, 0.75]) {
@@ -94,12 +96,15 @@ describe("phase 2 archive", () => {
       if (report.relationshipConfidence.selectionTier === "borderline") borderline = report;
     }
     expect(borderline?.relationshipConfidence.wordingStrength).toBe("moderate");
-    expect(borderline?.finalSummary).toContain("比较明显");
+    expect(borderline?.finalSummary).toContain("就你们现在的相处看");
+    expect(borderline?.finalSummary).not.toMatch(/关系分数是|成立度是/);
+    expect(borderline?.relationshipConfidence.reasons[0]?.text).toContain("比较明显");
     const matched = matchRelationship(source.a, source.b, computeIndices(source.a, source.b));
     const eligible = buildPairReportFromScores(source.a, source.b);
     expect(matched.candidates[0]?.tier).toBe("eligible");
     expect(eligible.relationshipConfidence.wordingStrength).toBe("strong");
-    expect(eligible.finalSummary).toContain("很典型");
+    expect(eligible.finalSummary).not.toContain("很典型");
+    expect(eligible.relationshipConfidence.reasons[0]?.text.startsWith("很典型")).toBe(true);
     expect(eligible.relationshipConfidence.reasons.every((item) => item.strength >= 60)).toBe(true);
   });
 

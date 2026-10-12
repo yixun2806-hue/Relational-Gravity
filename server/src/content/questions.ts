@@ -28,7 +28,7 @@ export const QUESTIONS: QuestionDef[] = [
       { key: "A", text: "没事，可能在忙", scores: { rationality: 8, independence: 6, replySensitivity: 0 } },
       { key: "B", text: "有点奇怪，但我不会问", scores: { replySensitivity: 6, conflictAvoidance: 7, emotionExpression: 1 } },
       { key: "C", text: "开始脑补是不是我说错话", scores: { replySensitivity: 10, emotionSensitivity: 8, securityNeed: 7 } },
-      { key: "D", text: "直接问：你干嘛去了？", scores: { communication: 9, conflictInitiative: 6, replySensitivity: 4 } },
+      { key: "D", text: "直接问：你干嘛去了？", scores: { communication: 9, conflictInitiative: 3, replySensitivity: 4 } },
     ],
   },
   {
@@ -73,9 +73,9 @@ export const QUESTIONS: QuestionDef[] = [
     scene: "和 TA 意见不合",
     stem: "你更容易？",
     options: [
-      { key: "A", text: "现在就想聊清楚", scores: { conflictInitiative: 10, communication: 7, conflictAvoidance: 1 } },
+      { key: "A", text: "现在就想聊清楚", scores: { conflictInitiative: 7, communication: 7, conflictAvoidance: 1 } },
       { key: "B", text: "先冷一冷再说", scores: { conflictAvoidance: 8, independence: 5, rationality: 5 } },
-      { key: "C", text: "讲道理拆解问题", scores: { rationality: 10, conflictInitiative: 5, emotionExpression: 4 } },
+      { key: "C", text: "讲道理拆解问题", scores: { rationality: 10, conflictInitiative: 4, emotionExpression: 4 } },
       { key: "D", text: "说「都行」先把场面圆过去", scores: { conflictAvoidance: 7, emotionExpression: 2, dominance: 1 } },
     ],
   },
@@ -109,7 +109,7 @@ export const QUESTIONS: QuestionDef[] = [
     scene: "一起做个决定（旅行 / 聚餐 / 项目）",
     stem: "你的角色更像？",
     options: [
-      { key: "A", text: "拉表格、订时间、推进落地", scores: { dominance: 10, investment: 8, rationality: 7 } },
+      { key: "A", text: "拉表格、订时间、推进落地", scores: { dominance: 9, investment: 8, rationality: 7 } },
       { key: "B", text: "随缘，到时候看感觉", scores: { novelty: 7, dominance: 1, conflictAvoidance: 5 } },
       { key: "C", text: "负责提奇怪但好玩的选项", scores: { abstract: 8, novelty: 8, communication: 5 } },
       { key: "D", text: "你们定，我配合", scores: { dominance: 1, dependency: 6, conflictAvoidance: 6 } },
@@ -147,7 +147,7 @@ export const QUESTIONS: QuestionDef[] = [
     options: [
       { key: "A", text: "都可以", scores: { dominance: 0, emotionExpression: 1, conflictAvoidance: 7 } },
       { key: "B", text: "给两个选项让 TA 选", scores: { dominance: 5, communication: 6, rationality: 5 } },
-      { key: "C", text: "直接拍板", scores: { dominance: 9, conflictInitiative: 5, investment: 4 } },
+      { key: "C", text: "直接拍板", scores: { dominance: 9, investment: 4 } },
       { key: "D", text: "反问：你呢？", scores: { communication: 5, dependency: 4, emotionSensitivity: 4 } },
     ],
   },
@@ -181,8 +181,8 @@ export const QUESTIONS: QuestionDef[] = [
     scene: "出现一个具体问题要解决",
     stem: "你的路径是？",
     options: [
-      { key: "A", text: "列事实，找方案", scores: { rationality: 10, conflictInitiative: 6, emotionExpression: 3 } },
-      { key: "B", text: "先处理情绪再谈事", scores: { emotionSensitivity: 8, emotionExpression: 6, companionship: 5 } },
+      { key: "A", text: "列事实，找方案", scores: { rationality: 10, conflictInitiative: 5, emotionExpression: 3 } },
+      { key: "B", text: "先处理情绪再谈事", scores: { emotionSensitivity: 8, emotionExpression: 6, companionship: 5, conflictInitiative: 3 } },
       { key: "C", text: "能拖就拖", scores: { conflictAvoidance: 8, novelty: 2, investment: 2 } },
       { key: "D", text: "谁更急谁来主导", scores: { dominance: 4, boundary: 6, communication: 3 } },
     ],
@@ -265,7 +265,7 @@ export const QUESTIONS: QuestionDef[] = [
     scene: "两个人都有点纠结",
     stem: "最后通常谁拍板？",
     options: [
-      { key: "A", text: "我", scores: { dominance: 9, conflictInitiative: 6, communication: 5 } },
+      { key: "A", text: "我", scores: { dominance: 9, conflictInitiative: 2, communication: 5 } },
       { key: "B", text: "TA", scores: { dominance: 1, dependency: 7, conflictAvoidance: 5 } },
       { key: "C", text: "一起耗到必须选", scores: { conflictAvoidance: 6, rationality: 3, novelty: 3 } },
       { key: "D", text: "用奇怪的方法随机一下", scores: { abstract: 8, novelty: 7, dominance: 3 } },
@@ -289,7 +289,7 @@ export const QUESTIONS: QuestionDef[] = [
     scene: "明明有点不对，但还没撕破",
     stem: "谁先低头？",
     options: [
-      { key: "A", text: "我比较容易先开口", scores: { conflictAvoidance: 6, emotionExpression: 7, communication: 6 } },
+      { key: "A", text: "我比较容易先开口", scores: { conflictAvoidance: 6, emotionExpression: 7, communication: 6, conflictInitiative: 6 } },
       { key: "B", text: "我会等 TA 先动", scores: { dominance: 6, conflictAvoidance: 5, emotionExpression: 2 } },
       { key: "C", text: "用行动示好，不直接说", scores: { emotionExpression: 3, investment: 6, conflictAvoidance: 6 } },
       { key: "D", text: "当成没发生，时间会冲淡", scores: { conflictAvoidance: 8, rationality: 4, replySensitivity: 2 } },
@@ -302,7 +302,7 @@ export const QUESTIONS: QuestionDef[] = [
     stem: "理想状态是？",
     options: [
       { key: "A", text: "完全属于自己", scores: { independence: 10, companionship: 0, boundary: 8 } },
-      { key: "B", text: "大部分时间和 TA 一起", scores: { companionship: 10, dependency: 7, independence: 1 } },
+      { key: "B", text: "大部分时间和 TA 一起", scores: { companionship: 10, dependency: 3, independence: 1 } },
       { key: "C", text: "各玩各的，但要在同一个空间", scores: { companionship: 5, independence: 6, boundary: 5 } },
       { key: "D", text: "安排一件从没做过的事", scores: { novelty: 9, investment: 5, abstract: 4 } },
     ],
@@ -350,7 +350,7 @@ export const QUESTIONS: QuestionDef[] = [
     stem: "你习惯？",
     options: [
       { key: "A", text: "立刻解释，把逻辑铺开", scores: { rationality: 9, communication: 8, conflictInitiative: 6 } },
-      { key: "B", text: "先生气，再决定说不说", scores: { emotionSensitivity: 7, conflictInitiative: 5, emotionExpression: 5 } },
+      { key: "B", text: "先生气，再决定说不说", scores: { emotionSensitivity: 7, conflictInitiative: 3, emotionExpression: 5 } },
       { key: "C", text: "不解释，看 TA 懂不懂", scores: { conflictAvoidance: 7, emotionExpression: 1, replySensitivity: 6 } },
       { key: "D", text: "用轻松的话把事揭过", scores: { abstract: 6, conflictAvoidance: 6, communication: 5 } },
     ],
@@ -373,7 +373,7 @@ export const QUESTIONS: QuestionDef[] = [
     scene: "如果给这段关系打一个此刻的投入分",
     stem: "你更诚实的是？",
     options: [
-      { key: "A", text: "挺上心的，愿意花精力", scores: { investment: 10, dependency: 6, companionship: 6 } },
+      { key: "A", text: "挺上心的，愿意花精力", scores: { investment: 10, dependency: 2, companionship: 6 } },
       { key: "B", text: "重要，但不要绑死我", scores: { boundary: 8, independence: 7, investment: 5 } },
       { key: "C", text: "走一步看一步", scores: { novelty: 5, investment: 3, rationality: 4 } },
       { key: "D", text: "我在，但表达得很克制", scores: { investment: 6, emotionExpression: 2, conflictAvoidance: 6 } },

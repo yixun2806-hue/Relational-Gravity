@@ -16,6 +16,7 @@ import {
   deleteAgent,
   generateAccessCodes,
   getAdminOverview,
+  getAdminRelationshipDistribution,
   getAdminRuntime,
   getAdminSettings,
   getAgent,
@@ -29,7 +30,7 @@ import {
 } from "../services/admin-service.js";
 
 const adminPage = join(process.cwd(), "admin/index.html");
-const agentFilter = z.union([z.literal("unassigned"), z.string().uuid()]).optional();
+const agentFilter = z.string().uuid().optional();
 
 export async function adminRoutes(app: FastifyInstance) {
   const renderAdmin = async (_request: unknown, reply: import("fastify").FastifyReply) => {
@@ -75,6 +76,13 @@ export async function adminRoutes(app: FastifyInstance) {
   app.get("/api/admin/overview", { preHandler: adminGuard }, async (request, reply) => {
     const query = z.object({ days: z.coerce.number().optional() }).parse(request.query);
     return ok(reply, await getAdminOverview(query.days));
+  });
+
+  app.get("/api/admin/relationship-distribution", { preHandler: adminGuard }, async (request, reply) => {
+    const query = z.object({
+      days: z.coerce.number().int().min(1).max(365).optional(),
+    }).parse(request.query);
+    return ok(reply, await getAdminRelationshipDistribution(query.days));
   });
 
   app.get("/api/admin/settings", { preHandler: adminGuard }, async (_request, reply) => {
@@ -155,7 +163,7 @@ export async function adminRoutes(app: FastifyInstance) {
       ["验证码", "代理人", "状态", "使用次数", "最后使用时间", "售价", "创建时间"],
       ...items.map((item) => [
         item.code,
-        item.agent ? (item.agent.deletedAt ? `${item.agent.name}（已删除）` : item.agent.name) : "未分配",
+        item.agent ? (item.agent.deletedAt ? `${item.agent.name}（已删除）` : item.agent.name) : "—",
         item.isActive ? "有效" : "已停用",
         item.useCount,
         item.lastUsedAt?.toISOString() || "",

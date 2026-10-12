@@ -12,6 +12,9 @@ const envSchema = z.object({
   ADMIN_PASSWORD: z.string().default(""),
   ADMIN_SESSION_TTL_HOURS: z.coerce.number().int().positive().default(12),
   WEB_ORIGIN: z.string().default(""),
+  P0_E2E: z.enum(["true", "false"]).default("false"),
+  AD_SESSION_TTL_SECONDS: z.coerce.number().int().positive().default(300),
+  AD_UNLOCK_MIN_SECONDS: z.coerce.number().int().nonnegative().default(0),
 });
 
 export type AppConfig = z.infer<typeof envSchema>;

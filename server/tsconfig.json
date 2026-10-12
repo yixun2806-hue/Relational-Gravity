@@ -19,9 +19,7 @@
     "dist",
     "node_modules",
     "src/**/*.test.ts",
-    "src/routes/ads.ts",
     "src/routes/products.ts",
-    "src/services/product-service.ts",
-    "src/services/unlock-service.ts"
+    "src/services/product-service.ts"
   ]
 }

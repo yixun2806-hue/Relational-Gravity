@@ -3,12 +3,32 @@ services:
     image: postgres:16-alpine
     environment:
       POSTGRES_USER: relab
-      POSTGRES_PASSWORD: relab
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
       POSTGRES_DB: relab
+    command:
+      - postgres
+      - -c
+      - logging_collector=on
+      - -c
+      - log_directory=/var/log/postgresql
+      - -c
+      - log_filename=postgresql-%Y-%m-%d.log
+      - -c
+      - log_rotation_age=1d
+      - -c
+      - log_rotation_size=0
+      - -c
+      - log_truncate_on_rotation=off
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./logs/postgres:/var/log/postgresql
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U relab -d relab"]
       interval: 5s
@@ -17,8 +37,16 @@ services:
 
   redis:
     image: redis:7-alpine
+    command: ["sh", "-c", "touch /var/log/redis/redis.log && chown redis:redis /var/log/redis/redis.log && chmod 644 /var/log/redis/redis.log && exec docker-entrypoint.sh redis-server --logfile /var/log/redis/redis.log"]
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - ./logs/redis:/var/log/redis
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -33,15 +61,39 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3000
-      DATABASE_URL: postgresql://relab:relab@postgres:5432/relab?schema=public
+      P0_E2E: ${P0_E2E:-false}
+      DATABASE_URL: postgresql://relab:${POSTGRES_PASSWORD}@postgres:5432/relab?schema=public
       REDIS_URL: redis://redis:6379
     ports:
       - "3000:3000"
+    volumes:
+      - ./logs/api:/logs
+      - ./server/scripts/p0-e2e.mjs:/app/scripts/p0-e2e.mjs:ro
+    command: ["sh", "-c", "set -o pipefail; npx prisma migrate deploy && node dist/src/index.js 2>&1 | tee -a /logs/api.log"]
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  log-retention:
+    image: redis:7-alpine
+    user: "0:0"
+    restart: unless-stopped
+    entrypoint: ["/bin/sh", "/retain-logs.sh"]
+    volumes:
+      - ./logs:/logs
+      - ./scripts/retain-logs.sh:/retain-logs.sh:ro
+    logging:
+      driver: json-file
+      options:
+        max-size: "1m"
+        max-file: "2"
 
 volumes:
   pgdata:

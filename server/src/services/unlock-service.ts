@@ -87,7 +87,7 @@ export async function unlockFullResult(
     throw new AppError(ErrorCodes.AD_SESSION_INVALID, "广告会话不存在或已过期", 400);
   }
   const elapsed = (Date.now() - session.createdAt.getTime()) / 1000;
-  if (!config.ALLOW_MOCK_AUTH && elapsed < config.AD_UNLOCK_MIN_SECONDS) {
+  if (config.P0_E2E !== "true" && elapsed < config.AD_UNLOCK_MIN_SECONDS) {
     throw new AppError(ErrorCodes.AD_NOT_FINISHED, "广告未完成，拒绝解锁", 400);
   }
 

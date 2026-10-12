@@ -39,6 +39,30 @@ export async function loginWithAccessCode(config: AppConfig, rawCode: string) {
   return { token, userId: user.id, accessRole: user.accessRole };
 }
 
+export async function loginForP0(config: AppConfig, mockOpenid: string) {
+  if (config.P0_E2E !== "true") {
+    throw new AppError(ErrorCodes.UNAUTHORIZED, "未登录或 token 失效", 401);
+  }
+  const loginKey = `p0:${mockOpenid}`;
+  const existing = await prisma.user.findUnique({ where: { loginKey } });
+  const user = existing ?? await prisma.$transaction(async (tx) => {
+    const accessCode = await tx.reportAccessCode.create({
+      data: {
+        code: `p0${randomUUID().replace(/-/g, "").slice(0, 16)}`,
+        priceFen: 0,
+        priceVariant: "p0",
+        channel: "p0",
+        isActive: true,
+      },
+    });
+    return tx.user.create({
+      data: { loginKey, accessRole: "buyer", accessCodeId: accessCode.id },
+    });
+  });
+  const token = await issueSession(config, user.id);
+  return { token, userId: user.id, accessRole: user.accessRole };
+}
+
 export async function loginAsWebGuest(config: AppConfig) {
   const user = await prisma.user.create({
     data: { loginKey: `guest:${randomUUID()}`, accessRole: "guest" },

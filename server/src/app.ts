@@ -10,6 +10,7 @@ import { testRoutes } from "./routes/tests.js";
 import { metaRoutes } from "./routes/meta.js";
 import { adminRoutes } from "./routes/admin.js";
 import { webRoutes } from "./routes/web.js";
+import { adRoutes } from "./routes/ads.js";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -48,6 +49,9 @@ export async function buildApp(config: AppConfig, redis: Redis): Promise<Fastify
   await app.register(metaRoutes);
   await app.register(adminRoutes);
   await app.register(webRoutes);
+  if (config.P0_E2E === "true") {
+    await app.register(adRoutes);
+  }
 
   return app;
 }

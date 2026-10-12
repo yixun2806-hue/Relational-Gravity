@@ -11,8 +11,24 @@
     ["stability", "稳定"],
   ];
 
+  function soften(value) {
+    return String(value ?? "")
+      .replaceAll("连体婴文学成立", "太习惯黏在一起了")
+      .replaceAll("连体婴文学", "太习惯黏在一起")
+      .replace(/目前是你为(\d+)/g, "你是$1")
+      .replace(/目前是TA为(\d+)/g, "TA是$1")
+      .replace(/你为(\d+)/g, "你是$1")
+      .replace(/TA为(\d+)/g, "TA是$1");
+  }
+
   function esc(value) {
-    return String(value ?? "").replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
+    return soften(value).replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
+  }
+
+  function letter(value) {
+    const parts = soften(value).split(/\n{2,}/).map((part) => part.trim()).filter(Boolean);
+    if (!parts.length) return "";
+    return parts.map((part) => `<p>${esc(part)}</p>`).join("");
   }
 
   function num(value) {
@@ -119,22 +135,89 @@
       ${sheet("06", "关系核心指数", allIndices)}
       ${playHtml}
       ${sheet("07", "完整的 16 项对照", `<div class="dos-grid">${allDims}</div>`)}
-      ${sheet("08", "你们最像的地方", similarHtml)}
-      ${sheet("09", "你们最不一样的地方", diffHtml)}
+      ${sheet("08", "你们最容易同频的地方", similarHtml)}
+      ${sheet("09", "你们最容易拉开距离的地方", diffHtml)}
       ${sheet("10", "你们怎么互补", complementHtml)}
       ${sheet("11", "谁更", `<div class="dos-grid">${whoHtml}</div>`)}
       ${sheet("", "", `<p class="dos-roast">${esc(full.dynamicRoast || full.roast || "")}</p>`, "dos-roast-wrap")}
       ${sheet("13", "最容易误解彼此的事", misHtml)}
-      ${sheet("14", lowConflict ? "你们更容易卡在哪里" : "典型冲突循环", cycleHtml, lowConflict ? "is-soft" : "")}
+      ${sheet("14", lowConflict ? "你们更容易卡在哪里" : "你们容易卡住的那一轮", cycleHtml, lowConflict ? "is-soft" : "")}
       ${sheet("15", "相处时最好知道的边界", boundaryHtml)}
       ${sheet("16", "这份关系里的有利条件", strengthHtml)}
       ${sheet("17", "最值得留意的地方", riskHtml)}
-      ${sheet("18", "沟通时可以怎么说", `${sceneHtml}<button class="dos-more" type="button">展开更多沟通场景</button>`)}
+      ${sheet("18", "有些话，其实可以这样说", `${sceneHtml}<button class="dos-more" type="button">展开更多沟通场景</button>`)}
       ${sheet("19", "分别给你们的提醒", `<div class="dos-advice-grid"><div>${adviceYou.map((item) => `<p class="dos-advice you">${esc(item)}</p>`).join("") || `<p class="dos-empty">这次没有单独写给你的建议。</p>`}</div><div>${adviceTa.map((item) => `<p class="dos-advice ta">${esc(item)}</p>`).join("") || `<p class="dos-empty">这次没有单独写给 TA 的建议。</p>`}</div></div>`)}
       ${sheet("21", "给你们两个人的建议", advicePair.map((item) => `<p class="dos-advice pair">${esc(item)}</p>`).join("") || `<p class="dos-empty">这次没有共同建议。</p>`)}
       ${sheet("22", "接下来最值得做的 3 件事", actions.map((item, index) => `<p class="dos-task"><b>0${index + 1}</b>${esc(item)}</p>`).join(""))}
-      ${sheet("23", "写在这份档案最后", `<div class="dos-letter"><p>${esc(full.finalSummary || full.summary || "")}</p></div>`)}
+      ${sheet("23", "想留给你们的话", `<div class="dos-letter">${letter(full.finalSummary || full.summary || "")}</div>`)}
       <p class="dos-foot">本报告基于双方本次答题结果生成。关系编号 ${esc(teaser.relationshipCode || "")}。仅供娱乐和自我探索，不构成心理、医疗或专业诊断。</p>
+    </div>`;
+  };
+
+  function cardQuote(full, teaser) {
+    const summary = soften(full && full.finalSummary || "");
+    const metric = /关系分数|成立度|目前比较突出|目前更接近/.test(summary);
+    const source = !metric && summary ? summary : soften((full && full.summary) || (teaser && teaser.tagline) || (teaser && teaser.subtitle) || "");
+    const first = source.split(/\n{2,}/)[0].split("。")[0].trim();
+    if (!first) return "你们这段关系，值得被慢慢看懂。";
+    const line = first.length > 72 ? `${first.slice(0, 72)}…` : first;
+    return /[。…]$/.test(line) ? line : `${line}。`;
+  }
+
+  function cardAbout(full, teaser) {
+    const parts = soften(full && full.finalSummary || "").split(/\n{2,}/).map((part) => part.trim()).filter(Boolean);
+    const source = parts.slice(1, 3).join(" ") || soften(full && full.summary || teaser && teaser.tagline || "");
+    return source.length > 110 ? `${source.slice(0, 110)}…` : source;
+  }
+
+  function cardTip(full) {
+    const report = full || {};
+    const risk = list(report.risks)[0];
+    return list(report.nextActions)[0]
+      || list(report.adviceForPair)[0]
+      || risk && risk.suggestion
+      || "把想法说具体一点，别只靠默契猜。";
+  }
+
+  function cardIndex(full, key) {
+    const detailed = list(full && full.indicesDetailed).find((item) => item.key === key);
+    if (detailed && Number.isFinite(Number(detailed.value))) return num(detailed.value);
+    const indices = full && full.indices;
+    if (indices && Number.isFinite(Number(indices[key]))) return num(indices[key]);
+    return null;
+  }
+
+  window.buildRelationshipCard = function buildRelationshipCard(full, teaser) {
+    const report = full || {};
+    const preview = teaser || {};
+    const you = report.you || {};
+    const ta = report.ta || {};
+    const relationshipName = String(preview.relationshipName || report.relationshipName || "关系档案");
+    const titleClass = relationshipName.length > 18 ? " is-very-long" : relationshipName.length > 11 ? " is-long" : "";
+    const rows = [
+      ["rapport", "默契"],
+      ["communication", "沟通"],
+      ["security", "安心"],
+      ["stability", "稳定"],
+    ].map(([key, label]) => {
+      const value = cardIndex(report, key);
+      return value === null ? "" : `<div class="rel-metric"><span>${label}</span><b>${value}%</b><div class="rel-meter"><i style="width:${value}%"></i></div></div>`;
+    }).join("");
+    return `<div class="rel-card" id="relationshipCard">
+      <div class="rel-head">
+      <p class="rel-kicker">关系引力</p>
+      <p class="rel-en">RELATIONSHIP ARCHIVE</p>
+      <h2 class="${titleClass.trim()}">${esc(relationshipName)}</h2>
+      <p class="rel-tagline">${esc(preview.tagline || report.tagline || preview.subtitle || report.subtitle || "")}</p>
+      <div class="rel-people">
+        <p><i>你</i><strong>${esc(you.typeName || preview.yourTypeName || "—")}</strong><small>${esc(you.tagline || "")}</small></p>
+        <p><i class="ta">TA</i><strong>${esc(ta.typeName || preview.taTypeName || "—")}</strong><small>${esc(ta.tagline || "")}</small></p>
+      </div>
+      <div class="rel-metrics">${rows || `<p class="rel-empty">这次没有单独列出核心指数。</p>`}</div>
+      </div>
+      <section class="rel-about"><p>关于你们</p><blockquote>${esc(cardAbout(report, preview) || cardQuote(report, preview))}</blockquote></section>
+      <aside class="rel-tip"><p>适合你们的小提醒</p><strong>${esc(cardTip(report))}</strong></aside>
+      <footer><b>关系引力</b></footer>
     </div>`;
   };
 })();

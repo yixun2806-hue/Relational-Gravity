@@ -158,7 +158,7 @@ export const RELATIONSHIP_TYPES: RelationshipTypeDef[] = [
     name: "记仇王 × 转头忘",
     subtitle: "「你还记得？」「我已经忘了。」",
     tagline: "内存大小完全不一样。",
-    summary: "一件事对一个人是历史，对另一个人是缓存。需要同步一下存档。",
+    summary: "一件事对一个人还在心里，对另一个人已经翻篇。重要的，说一声要记住。",
   },
   {
     id: "talk_now_later",
@@ -182,23 +182,23 @@ export const RELATIONSHIP_TYPES: RelationshipTypeDef[] = [
     name: "高独立 × 高独立",
     subtitle: "搭子？室友？合伙人？",
     tagline: "两个人都给得了空间，也都可能忘了靠近。",
-    summary: "自由充足。偶尔主动报个到，这段关系才不会变成两个安静的平行宇宙。",
+    summary: "自由很充足。偶尔主动报个到，这段关系才不会变成两个各自安静的世界。",
   },
   {
     id: "together_together",
     code: "23",
     name: "高陪伴 × 高陪伴",
-    subtitle: "连体婴文学",
-    tagline: "分开充电？不存在的。",
+    subtitle: "太习惯黏在一起",
+    tagline: "分开待一会儿，你们都有点不习惯。",
     summary: "黏是双向的，很好。也给彼此留一点独自呼吸的窗口。",
   },
   {
     id: "abstract_abstract",
     code: "24",
     name: "高抽象 × 高抽象",
-    subtitle: "正常人请勿靠近 Pro Max",
+    subtitle: "聊着聊着就飞远了",
     tagline: "对话可以从晚饭直接跳到宇宙。",
-    summary: "你们的梗密度超标。这是天赋，记得偶尔用人类语言对对齐。",
+    summary: "你们聊着聊着很容易飞起来。这很好玩。重要的事，记得再用一句人话对齐。",
   },
 ];
 

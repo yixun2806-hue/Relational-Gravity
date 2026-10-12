@@ -71,8 +71,10 @@
 .dos-dim p,.dos-slip p,.dos-note p,.dos-who-card p,.dos-case p,.dos-check p,.dos-risk p{margin:6px 0 0;color:#294768;font-size:13px;line-height:1.65}
 
 .dos-index{padding:8px 0;border-top:1px solid rgba(35,67,100,.1)}
-.dos-index summary{display:flex;justify-content:space-between;gap:12px;cursor:pointer;font-weight:700}
-.dos-index small{display:block;color:#718095;font-weight:400}
+.dos-index summary{display:grid;grid-template-columns:minmax(0,1fr) 4.25rem 9em;align-items:baseline;column-gap:12px;min-width:0;cursor:pointer;font-weight:700}
+.dos-index summary b{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;text-align:right;white-space:nowrap}
+.dos-index small{display:block;color:#718095;font-weight:400;text-align:left;white-space:nowrap}
+.dos-index-card b,.dos-who-top b{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
 
 .dos-play{padding:6px 4px 2px}
 .dos-line-say{display:grid;grid-template-columns:42px minmax(0,1fr);gap:8px;margin:0 0 10px;line-height:1.7}
@@ -107,6 +109,8 @@
 .dos-letter{padding:22px 8px 8px 18px;border-left:0;background:
   linear-gradient(#e7e0d2 1px,transparent 1px) 0 0/100% 32px,
   #fffdf8;font:21px/32px var(--hand);color:#385b82;box-shadow:0 10px 20px rgba(43,36,28,.05)}
+.dos-letter p{margin:0 0 16px}
+.dos-letter p:last-child{margin-bottom:0}
 .dos-empty{color:#718095;line-height:1.7}
 .dos-foot{color:#8a98aa;font-size:12px;line-height:1.7;text-align:center}
 .dos-more{margin-top:8px;border:0;background:none;color:#5577A8;font:18px var(--hand);cursor:pointer}
@@ -130,6 +134,8 @@
   .dos-cover{padding-right:48px}
 }
 @media(max-width:520px){
+  .dos-index summary{grid-template-columns:minmax(0,1fr) 3.5rem 8.6em;column-gap:8px;font-size:14px}
+  .dos-index small{font-size:12px}
   .dos-sheet{margin:16px 0;padding:26px 16px 18px}
   .dos-title{font-size:34px;letter-spacing:0}
   .dos-cover{padding:28px 16px 22px}
@@ -140,4 +146,51 @@
   .dos-evidence em{grid-column:2}
   .dos-note:nth-child(n),.dos-slip:nth-child(n),.dos-roast{transform:none}
 }
+.rel-card-host{position:fixed;left:0;top:0;width:1080px;height:1440px;pointer-events:none;z-index:30;transform:translateX(-120vw)}
+.rel-card{position:relative;display:flex;flex-direction:column;justify-content:space-between;width:1080px;height:1440px;box-sizing:border-box;padding:72px 80px 48px;overflow:hidden;color:#082d5b;background:
+  radial-gradient(circle at 88% 8%,rgba(175,200,232,.45),transparent 26%),
+  linear-gradient(180deg,#fffdf8,#f3ecdf);font-family:"Songti SC","STSong","PingFang SC","SimSun",serif}
+.rel-card::before{content:"";position:absolute;top:28px;left:78px;width:132px;height:28px;background:rgba(175,200,232,.82);transform:rotate(-4deg);box-shadow:0 1px 0 rgba(255,255,255,.45) inset}
+.rel-kicker{margin:28px 0 0;color:#5577A8;font:700 28px/1 "PingFang SC","Songti SC",serif;letter-spacing:.28em}
+.rel-en{margin:10px 0 0;color:#718095;font:22px/1 "PingFang SC",sans-serif;letter-spacing:.22em}
+.rel-card h2{margin:42px 0 0;font:700 78px/1.12 "Songti SC","STSong",serif;letter-spacing:-1px}
+.rel-card h2.is-long{font-size:64px}
+.rel-card h2.is-very-long{font-size:54px}
+.rel-tagline{margin:14px 0 0;color:#385b82;font:28px/1.45 "Kaiti SC","STKaiti","Songti SC",serif}
+.rel-people{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:34px}
+.rel-people p{margin:0;padding:24px 24px 20px;background:#fffdf8;border:1px solid rgba(35,67,100,.12)}
+.rel-people i{display:inline-block;margin-bottom:12px;padding:4px 12px;color:#fff;background:#5577A8;font:700 22px/1.2 "PingFang SC",sans-serif;font-style:normal}
+.rel-people i.ta{background:#D98670}
+.rel-people strong{display:block;font:700 38px/1.25 "Songti SC","STSong",serif}
+.rel-people small{display:block;margin-top:8px;color:#718095;font:21px/1.35 "Kaiti SC","STKaiti","Songti SC",serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rel-metrics{display:grid;grid-template-columns:1fr 1fr;gap:22px 36px;margin-top:36px}
+.rel-metric{display:grid;grid-template-columns:minmax(0,1fr) 5.2rem;align-items:baseline}
+.rel-metric span{font:700 30px/1.2 "Songti SC","STSong",serif}
+.rel-metric b{color:#5577A8;font:700 34px/1 Georgia,"Songti SC",serif;font-variant-numeric:tabular-nums;text-align:right}
+.rel-meter{grid-column:1/-1;height:8px;margin-top:10px;background:rgba(35,67,100,.1);overflow:hidden}
+.rel-meter i{display:block;height:100%;background:#5577A8}
+.rel-about{margin-top:0;padding:28px 30px;background:#fffdf8;border:1px solid rgba(35,67,100,.12);box-shadow:4px 5px 0 rgba(85,119,168,.08)}
+.rel-about > p,.rel-tip p{margin:0 0 12px;color:#9a6a58;font:700 21px/1.2 "PingFang SC",sans-serif;letter-spacing:.12em}
+.rel-about blockquote{margin:0;color:#385b82;font:30px/1.55 "Kaiti SC","STKaiti","Songti SC",serif}
+.rel-tip{margin:26px 22px 0;padding:20px 26px 18px;background:#fff4c8;box-shadow:0 8px 16px rgba(43,36,28,.06);transform:rotate(-.5deg)}
+.rel-tip strong{display:block;color:#082d5b;font:700 27px/1.5 "Kaiti SC","STKaiti","Songti SC",serif}
+.rel-empty{margin:0;color:#718095;font:28px/1.6 "Kaiti SC","STKaiti",serif}
+.rel-card footer{display:flex;justify-content:space-between;align-items:baseline;margin-top:0;padding-top:22px;border-top:1px solid rgba(35,67,100,.12);color:#718095;font:24px/1 "PingFang SC",sans-serif}
+.rel-card footer b{color:#082d5b;font:700 32px "Songti SC","STSong",serif}
+
 @media(prefers-reduced-motion:reduce){.dos-meter i,.dos-track i,.view{transition:none;animation:none}}
+@media print{
+  @page{size:A4 portrait;margin:12mm}
+  html,body{min-height:0!important;height:auto!important}
+  html,body,.app,.shell,.view,.dos-report,.report-capture{background:#fff!important;box-shadow:none!important}
+  .nav,.site-footer,.report-actions,.toast,.rel-card-host,.dos-more,.app::before,.app::after{display:none!important}
+  .app{overflow:visible;min-height:0;background:#fff}
+  main,.shell{width:auto;max-width:none;margin:0;padding:0!important}
+  .dos-file,.dos-index-card,.dos-advice,.dos-script,.dos-task,.dos-note,.dos-dim,.dos-who-card,.dos-case,.dos-check,.dos-risk,.dos-evidence,.dos-slip,.dos-offer,.dos-index,.dos-letter{break-inside:avoid;page-break-inside:avoid}
+  .dos-sheet{margin:0 0 12px;box-shadow:none}
+  .dos-sheet > h2{break-after:avoid;break-after:avoid-page;page-break-after:avoid}
+  .dos-sheet > h2 + *{break-before:avoid;break-before:avoid-page;page-break-before:avoid}
+  .dos-meter i,.dos-track i,.dos-file.you,.dos-file.ta,.dos-file.you i,.dos-file.ta i,.dos-advice.you,.dos-advice.ta,.dos-cycle .cut,.dos-seal,.dos-roast,.dos-letter,.dos-script blockquote{
+    -webkit-print-color-adjust:exact;print-color-adjust:exact
+  }
+}

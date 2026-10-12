@@ -4,10 +4,16 @@ import { QUESTIONS, type OptionKey } from "../content/questions.js";
 import { EMPTY_SCORES, type DimensionScores } from "../domain/dimensions.js";
 import { RELATIONSHIP_FIXTURES } from "./fixtures.js";
 import { computeIndices } from "./indices.js";
-import { MIN_ANCHOR_STRENGTH, matchRelationship } from "./relationship.js";
+import { MIN_ANCHOR_STRENGTH, blendRelationshipScore, matchRelationship, rankRelationshipCandidates, relationshipCompetition } from "./relationship.js";
 import { scoreAnswers } from "./scoring.js";
 
 const match = (a: DimensionScores, b: DimensionScores) => matchRelationship(a, b, computeIndices(a, b));
+const rank = (a: DimensionScores, b: DimensionScores) => rankRelationshipCandidates(a, b, computeIndices(a, b));
+const neutral = (patch: Partial<DimensionScores> = {}): DimensionScores => ({
+  ...EMPTY_SCORES,
+  ...Object.fromEntries(Object.keys(EMPTY_SCORES).map((key) => [key, 50])),
+  ...patch,
+}) as DimensionScores;
 
 describe("relationship V2 reachability", () => {
   it("defines one independent fixture for every relationship type", () => {
@@ -117,6 +123,61 @@ describe("eligibility anchors and extremes", () => {
     const noExpressionGapB = { ...EMPTY_SCORES, companionship: 92, emotionExpression: 50 };
     const candidate = match(noExpressionGapA, noExpressionGapB).candidates.find((item) => item.typeId === "iceberg_sun");
     expect(candidate?.eligible ?? false).toBe(false);
+  });
+
+  it("keeps a moderate dominance gap from becoming a typical hesitate match", () => {
+    const mild = rank(neutral({ dominance: 60 }), neutral({ dominance: 45 }))
+      .find((item) => item.typeId === "hesitate_decide");
+    const strong = rank(neutral({ dominance: 30 }), neutral({ dominance: 75 }))
+      .find((item) => item.typeId === "hesitate_decide");
+    expect(mild?.tier).toBe("weak");
+    expect(mild?.score ?? 100).toBeLessThan(40);
+    expect(strong?.tier).toBe("eligible");
+    expect(strong?.score ?? 0).toBeGreaterThanOrEqual(50);
+    expect((strong?.score ?? 0) - (mild?.score ?? 0)).toBeGreaterThan(30);
+  });
+
+  it("does not add an orientation bonus on top of the winning direction", () => {
+    const low = neutral({ dominance: 20 });
+    const high = neutral({ dominance: 80 });
+    const forward = rank(low, high).find((item) => item.typeId === "hesitate_decide");
+    const reverse = rank(high, low).find((item) => item.typeId === "hesitate_decide");
+    const symmetric = rank(
+      neutral({ novelty: 80, abstract: 80 }),
+      neutral({ novelty: 80, abstract: 80 }),
+    ).find((item) => item.typeId === "spotlight_spotlight");
+    expect(forward?.score).toBe(70);
+    expect(reverse?.score).toBe(forward?.score);
+    expect(reverse?.eligibility).toBe(forward?.eligibility);
+    expect(forward?.roles).toEqual({ a: "纠结王", b: "决策王" });
+    expect(reverse?.roles).toEqual({ a: "决策王", b: "纠结王" });
+    expect(symmetric?.score).toBe(85);
+    expect(forward?.score ?? 100).toBeLessThanOrEqual(symmetric?.score ?? 0);
+    expect(blendRelationshipScore(70, 100) - blendRelationshipScore(70, 0)).toBeCloseTo(30);
+  });
+
+  it("lets a strong borderline outrank a barely eligible candidate", () => {
+    const pair = [
+      neutral({ abstract: 68, novelty: 64, communication: 96 }),
+      neutral({ abstract: 68, novelty: 64, communication: 96 }),
+    ] as const;
+    const ranked = rank(pair[0], pair[1]);
+    const spotlight = ranked.find((item) => item.typeId === "spotlight_spotlight");
+    const abstract = ranked.find((item) => item.typeId === "abstract_abstract");
+    expect(spotlight?.tier).toBe("borderline");
+    expect(abstract?.tier).toBe("eligible");
+    expect(spotlight?.competitionScore ?? 0).toBeGreaterThan(abstract?.competitionScore ?? 0);
+    expect(ranked.findIndex((item) => item.typeId === "spotlight_spotlight"))
+      .toBeLessThan(ranked.findIndex((item) => item.typeId === "abstract_abstract"));
+    expect(relationshipCompetition(50, 58, "eligible")).toBeLessThan(relationshipCompetition(72, 56, "borderline"));
+    expect(relationshipCompetition(55, 35, "weak")).toBeLessThan(relationshipCompetition(48, 42, "borderline"));
+  });
+
+  it("does not let support alone establish a both-high relationship", () => {
+    const loud = neutral({ communication: 96 });
+    const spotlight = rank(loud, loud).find((item) => item.typeId === "spotlight_spotlight");
+    expect(spotlight?.tier).not.toBe("eligible");
+    expect(spotlight?.eligible).toBe(false);
   });
 
   it("keeps Top3 invariant across deterministic general samples", () => {

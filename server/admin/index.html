@@ -110,7 +110,7 @@
     .sidebar-foot .nav-ghost:hover { background: rgba(255,255,255,.06); color: #fff; }
     .logout { color: #9eb3c8; }
     .main { display: flex; flex-direction: column; min-width: 0; padding: 16px 22px 0; background: var(--canvas); }
-    .shell { flex: 1; width: 100%; max-width: 1480px; padding-bottom: 12px; }
+    .shell { flex: 1; width: 100%; max-width: 1680px; padding-bottom: 12px; }
     .admin-footer {
       display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
       padding: 10px 4px 14px; color: #9aa8ba; font-size: 12px;
@@ -250,14 +250,63 @@
     .stat-value { margin-top: 4px; font: 700 22px/1.05 var(--sans); letter-spacing: -.3px; color: #1a2b45; }
     .stat-delta { display: inline-flex; align-items: center; gap: 3px; margin-top: 5px; color: var(--green); font-size: 11px; font-weight: 500; }
     .stat-delta.flat { color: #8aa0b5; }
+    .stat-delta.quiet { color: #c5d0dc; font-weight: 400; }
     .stat-delta svg { width: 9px; height: 9px; }
-    .ov-mid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(280px, .95fr); gap: 10px; margin-bottom: 10px; }
-    .ov-bottom { display: grid; grid-template-columns: 1.05fr 1.1fr 1.05fr; gap: 10px; margin-bottom: 8px; }
+    .stat-value.compact { font-size: 16px; line-height: 1.35; letter-spacing: 0; }
+    .ov-bottom {
+      display: grid;
+      grid-template-columns: minmax(0, 28fr) minmax(0, 36fr) minmax(0, 36fr);
+      gap: 10px;
+      margin-bottom: 8px;
+    }
     .card {
       border: 1px solid #e4eaf2; border-radius: var(--radius); background: #fff; box-shadow: var(--shadow); padding: 12px 14px 10px;
     }
-    .card-line, .card-treemap { min-height: 220px; height: 222px; display: flex; flex-direction: column; }
-    .card-donut, .card-weekly, .card-records { min-height: 184px; height: 188px; display: flex; flex-direction: column; }
+    .trend-card { margin-bottom: 10px; padding: 16px 18px 14px; }
+    .trend-card .card-title { font-size: 15px; }
+    .trend-summary { display: flex; flex-wrap: wrap; gap: 6px 22px; margin: 0 0 6px; color: #8aa0b5; font-size: 12px; }
+    .trend-summary b { margin: 0 3px; color: #1a2b45; font-weight: 700; }
+    .trend-layout { display: grid; grid-template-columns: minmax(0, 3fr) minmax(180px, 1fr); align-items: stretch; }
+    .trend-chart { position: relative; min-width: 0; aspect-ratio: 3 / 1; min-height: 220px; }
+    .trend-chart svg { width: 100%; height: 100%; display: block; }
+    .trend-ranking { min-width: 0; padding: 2px 2px 0 16px; border-left: 1px solid #f0f3f8; }
+    .trend-ranking h3 { margin: 0; color: #1a2b45; font: 700 13px/1.3 var(--sans); }
+    .rank-list { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 8px; }
+    .rank-list li { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 8px; align-items: center; font-size: 12px; }
+    .rank-no { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--blue); color: #fff; font-size: 11px; font-weight: 700; }
+    .rank-no.late { background: #e8eef6; color: #7d90a6; }
+    .rank-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #3e5270; }
+    .rank-value { font-weight: 700; font-variant-numeric: tabular-nums; color: #1a2b45; }
+    .rank-empty, .chart-empty { color: #94a3b8; font-size: 13px; }
+    .rank-empty { margin-top: 28px; }
+    .chart-empty { position: absolute; inset: 0; display: grid; place-items: center; }
+    .card-treemap, .card-donut, .card-records { min-height: 268px; display: flex; flex-direction: column; }
+    #usageTreemap { flex: 1; min-height: 210px; }
+    .rel-kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .rel-kpis .stat-card { height: auto; min-height: 90px; align-items: flex-start; }
+    .rel-card { margin-top: 10px; }
+    .rel-digest { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 0 0 14px; color: #607489; font-size: 12px; }
+    .rel-digest b { color: #1a2b45; font-weight: 700; }
+    .rel-list { display: grid; gap: 11px; min-width: 0; }
+    .rel-row {
+      display: grid;
+      grid-template-columns: 22px 34px minmax(196px, 260px) minmax(72px, 1fr) max-content;
+      gap: 10px;
+      align-items: center;
+      min-width: 0;
+    }
+    .rel-rank { color: #9aabbe; font-size: 12px; font-weight: 700; text-align: center; }
+    .rel-rank.top { color: #163a6b; }
+    .rel-code { color: #8aa0b8; font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .rel-name { min-width: 0; color: #1a2b45; font-size: 13px; font-weight: 600; line-height: 1.35; }
+    .rel-flag { margin-left: 6px; color: #b7c3d1; font-size: 11px; font-weight: 500; white-space: nowrap; }
+    .rel-flag.high { color: #c48a3a; }
+    .rel-flag.low { color: #8aa0b5; }
+    .rel-track { height: 9px; border-radius: 99px; background: #e7eef8; overflow: hidden; }
+    .rel-fill { height: 100%; border-radius: inherit; background: var(--blue); }
+    .rel-stat { color: #1a2b45; font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; text-align: right; }
+    .rel-stat span { margin-left: 6px; color: #7b8ea3; font-weight: 600; }
+    .rel-note { margin: 10px 0 0; color: #94a3b8; font-size: 11px; }
     .card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 8px; flex: none; }
     .card-title { display: flex; align-items: center; gap: 6px; margin: 0; font: 700 13px/1.3 var(--sans); color: #1a2b45; }
     .info-dot {
@@ -286,12 +335,13 @@
       background: transparent; cursor: pointer;
     }
     .chart-tip .tip-day { color: #8aa0b8; font-size: 11px; line-height: 1.2; }
-    .chart-tip .tip-val { margin-top: 3px; color: #5b6b7f; font-size: 12px; }
+    .chart-tip .tip-metric { margin-top: 4px; color: #5b6b7f; font-size: 12px; }
+    .chart-tip .tip-val { margin-top: 2px; color: #1a3f73; font-size: 13px; font-weight: 700; }
     .chart-tip .tip-val b { color: #1a3f73; font-weight: 700; }
     .treemap { flex: 1; min-height: 0; }
     .treemap-agent {
       display: grid; grid-template-columns: 1.45fr 1.05fr .95fr .55fr; grid-template-rows: 1fr 1fr;
-      gap: 3px; height: 100%;
+      gap: 3px; height: 100%; min-height: 210px;
     }
     .tm-a { grid-column: 1; grid-row: 1 / 3; }
     .tm-b { grid-column: 2; grid-row: 1 / 3; }
@@ -344,17 +394,21 @@
     .ov-settings .section-head { margin-bottom: 8px; }
     .nav button[data-view="settings"].active,
     #settingsBtn.active { color: #fff; background: linear-gradient(90deg, #2f7cf6, #3d8aff); box-shadow: 0 8px 18px rgba(47,124,246,.28); }
-    @media (max-width: 1280px) {
-      .ov-kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    @media (max-width: 1180px) {
+      .ov-kpis, .rel-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .ov-bottom { grid-template-columns: 1fr 1fr; }
       .card-records { grid-column: 1 / -1; }
+      .trend-layout { grid-template-columns: minmax(0, 1fr) 176px; }
+      .rel-row { grid-template-columns: 22px 34px minmax(160px, 210px) minmax(64px, 1fr) max-content; gap: 8px; }
     }
     @media (max-width: 980px) {
       .app { grid-template-columns: 84px minmax(0, 1fr); }
       .brand-sub, .nav button span.label, .sidebar-foot .label-text { display: none; }
       .nav button, .sidebar-foot .nav-ghost { justify-content: center; padding: 12px; }
-      .ov-mid, .ov-bottom { grid-template-columns: 1fr; }
-      .ov-kpis { grid-template-columns: 1fr 1fr; }
+      .ov-bottom { grid-template-columns: 1fr; }
+      .ov-kpis, .rel-kpis { grid-template-columns: 1fr 1fr; }
+      .trend-layout { grid-template-columns: 1fr; }
+      .trend-ranking { border-left: 0; border-top: 1px solid #f0f3f8; padding: 12px 0 0; margin-top: 8px; }
       .ov-top { flex-direction: column; }
       .main { padding: 18px 14px 0; }
       .kpis, .status-grid { grid-template-columns: 1fr 1fr; }
@@ -424,6 +478,10 @@
           <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
           <span class="label">运营概览</span>
         </button>
+        <button data-view="relationships" type="button">
+          <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19h16"/><rect x="6" y="11" width="3" height="6" rx=".6"/><rect x="11" y="7" width="3" height="10" rx=".6"/><rect x="16" y="13" width="3" height="4" rx=".6"/></svg>
+          <span class="label">关系结果分布</span>
+        </button>
         <button data-view="agents" type="button">
           <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3"/><path d="M3 19c.8-3 2.7-4.5 6-4.5S17.2 16 18 19"/><circle cx="17" cy="9" r="2.2"/><path d="M19.5 19c-.4-1.8-1.4-3-3.2-3.6"/></svg>
           <span class="label">代理人管理</span>
@@ -462,9 +520,9 @@
                 <span id="dateRangeText">加载中…</span>
               </div>
               <div class="range-tabs" id="rangeTabs">
-                <button type="button" data-range="7">7天</button>
-                <button type="button" data-range="30" class="active">30天</button>
-                <button type="button" data-range="90">90天</button>
+                <button type="button" data-range="7" aria-pressed="false">7天</button>
+                <button type="button" data-range="30" class="active" aria-pressed="true">30天</button>
+                <button type="button" data-range="90" aria-pressed="false">90天</button>
               </div>
               <div class="user-chip">
                 <span class="user-avatar" aria-hidden="true">
@@ -477,30 +535,36 @@
 
           <div class="ov-kpis" id="overviewKpis"></div>
 
-          <div class="ov-mid">
-            <article class="card card-line">
-              <div class="card-head">
-                <div>
-                  <h2 class="card-title">每日使用的验证码 <span class="info-dot" title="按天统计每日被使用的验证码数量">i</span></h2>
-                  <p class="card-sub">按天统计每日被使用的验证码数量</p>
-                </div>
-                <select class="soft-select" id="lineGrain" aria-label="统计粒度">
-                  <option>按天</option>
-                </select>
+          <article class="card trend-card">
+            <div class="card-head">
+              <div>
+                <h2 class="card-title">每日使用的验证码</h2>
+                <p class="card-sub">按天统计验证码首次使用数量</p>
               </div>
-              <div class="line-wrap" id="dailyUsageChart"></div>
-            </article>
-            <article class="card card-treemap">
-              <div class="card-head">
-                <h2 class="card-title">验证码使用分布（树状图）</h2>
-                <div class="seg-group" id="treemapMode">
-                  <button type="button" class="active" data-mode="agent">按代理人</button>
-                  <button type="button" data-mode="status">按状态</button>
-                </div>
+            </div>
+            <div class="trend-summary" id="dailySummary"></div>
+            <div class="trend-layout">
+              <div class="trend-chart" id="dailyUsageChart"></div>
+              <aside class="trend-ranking" id="dailyRanking" aria-label="使用量排名"></aside>
+            </div>
+          </article>
+
+          <article class="card trend-card">
+            <div class="card-head">
+              <div>
+                <h2 class="card-title">近 7 天数据</h2>
+                <p class="card-sub" id="weeklySub">最近 7 天验证码首次使用数量</p>
               </div>
-              <div id="usageTreemap"></div>
-            </article>
-          </div>
+              <div class="seg-group" id="weeklyMetric" role="group" aria-label="近 7 天指标">
+                <button type="button" class="active" data-metric="usage" aria-pressed="true">使用量</button>
+                <button type="button" data-metric="amount" aria-pressed="false">金额</button>
+              </div>
+            </div>
+            <div class="trend-layout">
+              <div class="trend-chart" id="weeklyChart"></div>
+              <aside class="trend-ranking" id="weeklyRanking" aria-label="近 7 天排名"></aside>
+            </div>
+          </article>
 
           <div class="ov-bottom">
             <article class="card card-donut">
@@ -512,12 +576,15 @@
                 <div class="donut-legend" id="donutLegend"></div>
               </div>
             </article>
-            <article class="card card-weekly">
+            <article class="card card-treemap">
               <div class="card-head">
-                <h2 class="card-title">近 7 天数据</h2>
-                <div class="weekly-legend"><span><i style="background:#2f7cf6"></i>使用量</span><span><i style="background:#34c759"></i>金额(元)</span></div>
+                <h2 class="card-title">验证码使用分布</h2>
+                <div class="seg-group" id="treemapMode" role="group" aria-label="使用分布维度">
+                  <button type="button" class="active" data-mode="agent" aria-pressed="true">按代理人</button>
+                  <button type="button" data-mode="status" aria-pressed="false">按状态</button>
+                </div>
               </div>
-              <div class="weekly-wrap" id="weeklyChart"></div>
+              <div id="usageTreemap"></div>
             </article>
             <article class="card card-records">
               <div class="card-head">
@@ -532,6 +599,39 @@
               </div>
             </article>
           </div>
+        </section>
+
+        <section class="view" id="relationships" hidden>
+          <div class="ov-top">
+            <div>
+              <h1>关系结果分布</h1>
+              <p class="lede">查看已完成双人测试中，24 种关系结果的真实分布</p>
+            </div>
+            <div class="ov-tools">
+              <div class="date-range" id="relDateRangeLabel">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+                <span id="relDateRangeText">加载中…</span>
+              </div>
+              <div class="range-tabs" id="relRangeTabs">
+                <button type="button" data-range="7" aria-pressed="false">7天</button>
+                <button type="button" data-range="30" class="active" aria-pressed="true">30天</button>
+                <button type="button" data-range="90" aria-pressed="false">90天</button>
+              </div>
+            </div>
+          </div>
+          <div class="ov-kpis rel-kpis" id="relKpis"></div>
+          <article class="card rel-card">
+            <div class="card-head">
+              <div>
+                <h2 class="card-title">24 种关系分布</h2>
+                <p class="card-sub">百分比按当前时间范围内已生成的关系结果计算</p>
+              </div>
+              <div class="hint" id="relTotal">共 0 组测试</div>
+            </div>
+            <div class="rel-digest" id="relDigest">暂无真实测试数据</div>
+            <div class="rel-list" id="relList"></div>
+            <p class="rel-note" id="relNote">占当前时间范围内全部完成双人测试的比例</p>
+          </article>
         </section>
 
         <section class="view" id="settings" hidden>
@@ -588,7 +688,6 @@
             <article class="kpi"><div class="kpi-label">已分配验证码</div><div class="kpi-value" id="agentAssigned">—</div></article>
             <article class="kpi"><div class="kpi-label">剩余库存</div><div class="kpi-value" id="agentStock">—</div></article>
           </div>
-          <div id="unassignedBanner"></div>
           <div class="panel" style="margin-top:14px">
             <div class="table-wrap allow-menu">
               <table>
@@ -613,7 +712,7 @@
           <div class="panel">
             <div class="toolbar">
               <input class="field" id="searchInput" inputmode="numeric" maxlength="6" placeholder="搜索 6 位验证码">
-              <select class="field" id="agentSelect"><option value="">全部代理人</option><option value="unassigned">未分配</option></select>
+              <select class="field" id="agentSelect"><option value="">全部代理人</option></select>
               <select class="field" id="statusSelect"><option value="all">全部状态</option><option value="active">有效</option><option value="disabled">已停用</option></select>
               <select class="field" id="usageSelect"><option value="all">全部使用情况</option><option value="unused">从未使用</option><option value="used">已使用</option><option value="frequent">高频使用</option></select>
               <button class="btn secondary" id="refreshBtn">刷新</button>
@@ -749,11 +848,13 @@
       sort: "",
       order: "",
       rangeDays: 30,
+      relationshipRangeDays: 30,
       treemapMode: "agent",
+      weeklyMetric: "usage",
       priceFen: 990,
     };
     const $ = (id) => document.getElementById(id);
-    const views = ["overview", "agents", "codes", "system", "settings"];
+    const views = ["overview", "relationships", "agents", "codes", "system", "settings"];
     if (!views.includes(state.view)) state.view = "overview";
 
     document.querySelectorAll("[data-view]").forEach((button) => button.addEventListener("click", () => showView(button.dataset.view)));
@@ -768,6 +869,9 @@
       document.querySelectorAll("[data-view]").forEach((item) => item.classList.toggle("active", item.dataset.view === view));
       document.querySelectorAll(".view").forEach((section) => { section.hidden = section.id !== view; });
       if (view === "system") loadRuntime();
+      if (view === "relationships") {
+        loadRelationshipDistribution().catch((error) => { if (error.status !== 401) showToast(error.message, true); });
+      }
     }
 
     async function api(path, options = {}) {
@@ -799,7 +903,7 @@
       ["agentCount", "agentAssigned", "agentStock", "moneyTodayCodes", "moneyToday", "moneyTotal", "donutTotal"].forEach((id) => {
         if ($(id)) $(id).textContent = "—";
       });
-      ["overviewKpis", "dailyUsageChart", "usageTreemap", "donutLegend", "weeklyChart", "recentUsageRows", "lowStockBox", "unassignedBanner", "agentRows", "codeRows", "runtimeGrid"].forEach((id) => {
+      ["overviewKpis", "dailySummary", "dailyUsageChart", "dailyRanking", "usageTreemap", "donutLegend", "weeklyChart", "weeklyRanking", "recentUsageRows", "relKpis", "relDigest", "relList", "lowStockBox", "agentRows", "codeRows", "runtimeGrid"].forEach((id) => {
         if ($(id)) $(id).innerHTML = "";
       });
       $("password").value = "";
@@ -869,15 +973,15 @@
     }
 
     function formatDelta(delta) {
-      if (delta === null || delta === undefined || Number.isNaN(delta)) return { text: "暂无环比数据", up: null };
+      if (delta === null || delta === undefined || Number.isNaN(delta)) return { text: "暂无上期对比", up: null, quiet: true };
       const sign = delta > 0 ? "+" : "";
-      return { text: `${sign}${delta}%`, up: delta > 0 ? true : delta < 0 ? false : null };
+      return { text: `${sign}${delta}%`, up: delta > 0 ? true : delta < 0 ? false : null, quiet: false };
     }
 
     function renderOverviewHero(kpis) {
       $("overviewKpis").innerHTML = kpis.map((item) => {
         const delta = formatDelta(item.delta);
-        const deltaClass = delta.up === false ? "stat-delta" : delta.up ? "stat-delta" : "stat-delta flat";
+        const deltaClass = delta.quiet ? "stat-delta quiet" : delta.up === false ? "stat-delta" : delta.up ? "stat-delta" : "stat-delta flat";
         const arrow = delta.up === true
           ? '<svg viewBox="0 0 12 12"><path d="M6 2.5L9.5 7H2.5L6 2.5z" fill="currentColor"/></svg>'
           : delta.up === false
@@ -913,68 +1017,150 @@
       return d;
     }
 
-    function renderDailyUsageChart(days) {
-      const list = Array.isArray(days) ? days : [];
-      const wrap = $("dailyUsageChart");
-      if (!list.length) {
-        wrap.innerHTML = '<div class="empty" style="padding:40px 0">暂无使用数据</div>';
+    function attrText(value) {
+      return escapeHtml(value).replace(/"/g, "&quot;");
+    }
+
+    function renderTrendChart(wrap, series, options) {
+      const list = Array.isArray(series) ? series : [];
+      const hasValue = list.some((item) => Number(item.value) > 0);
+      if (!list.length || !hasValue) {
+        wrap.innerHTML = `<div class="chart-empty">${escapeHtml(options.emptyText)}</div>`;
         return;
       }
-      const W = 720, H = 168, pad = { l: 42, r: 14, t: 22, b: 28 };
-      const maxY = Math.max(12, ...list.map((item) => item.codes));
-      const step = Math.max(1, Math.ceil(maxY / 4));
-      const ticks = [];
-      for (let v = 0; v <= maxY; v += step) ticks.push(v);
-      if (ticks.at(-1) !== maxY) ticks.push(maxY);
+      const W = 960;
+      const H = 320;
+      const pad = { l: 48, r: 16, t: 22, b: 34 };
+      const maxValue = Math.max(...list.map((item) => Number(item.value) || 0));
+      const maxY = options.money
+        ? Math.max(1, Math.ceil(maxValue * 1.2 * 10) / 10)
+        : Math.max(1, Math.ceil(maxValue * 1.2));
       const plotW = W - pad.l - pad.r;
       const plotH = H - pad.t - pad.b;
-      const xAt = (i) => pad.l + (i / Math.max(list.length - 1, 1)) * plotW;
+      const xAt = (i) => pad.l + (list.length === 1 ? plotW / 2 : (i / (list.length - 1)) * plotW);
       const yAt = (v) => pad.t + plotH - (v / maxY) * plotH;
-      const pts = list.map((item, i) => ({ x: xAt(i), y: yAt(item.codes), day: item.day, codes: item.codes }));
+      const pts = list.map((item, i) => ({
+        x: xAt(i),
+        y: yAt(Number(item.value) || 0),
+        axis: item.axis,
+        tip: item.tip,
+        value: Number(item.value) || 0,
+        display: item.display,
+      }));
       const line = smoothLinePath(pts);
-      const area = `${line} L${pts[pts.length - 1].x},${yAt(0)} L${pts[0].x},${yAt(0)} Z`;
-      const labelStep = list.length > 45 ? 6 : list.length > 20 ? 2 : 1;
-      const hGrid = ticks.map((v) => {
-        const yy = yAt(v);
-        return `<line x1="${pad.l}" y1="${yy}" x2="${W - pad.r}" y2="${yy}" stroke="#edf1f6" stroke-width="1"/>
-          <text x="${pad.l - 8}" y="${yy + 3}" text-anchor="end" fill="#a3b1c2" font-size="10">${v}</text>`;
+      const area = `${line} L${pts[pts.length - 1].x.toFixed(2)},${yAt(0).toFixed(2)} L${pts[0].x.toFixed(2)},${yAt(0).toFixed(2)} Z`;
+      const labelStep = list.length > 60 ? 10 : list.length > 20 ? 5 : 1;
+      const rawTicks = [0, 1, 2, 3, 4].map((step) => (maxY * step) / 4);
+      const ticks = options.money ? rawTicks : [...new Set(rawTicks.map((value) => Math.round(value)))];
+      const hGrid = ticks.map((value) => {
+        const yy = yAt(value);
+        const label = options.money
+          ? (Math.abs(value - Math.round(value)) < 0.001 ? String(Math.round(value)) : value.toFixed(1))
+          : String(value);
+        return `<line x1="${pad.l}" y1="${yy.toFixed(2)}" x2="${W - pad.r}" y2="${yy.toFixed(2)}" stroke="#f3f6fa" stroke-width="1"/>
+          <text x="${pad.l - 8}" y="${(yy + 4).toFixed(2)}" text-anchor="end" fill="#c5d0dc" font-size="11">${label}</text>`;
       }).join("");
-      const vGrid = pts.map((p, i) => (i % labelStep !== 0 ? "" : `<line x1="${p.x}" y1="${pad.t}" x2="${p.x}" y2="${H - pad.b}" stroke="#eef2f7" stroke-width="1" stroke-dasharray="2 3"/>`)).join("");
-      const labels = pts.map((p, i) => (i % labelStep !== 0 ? "" : `<text x="${p.x}" y="${H - 8}" text-anchor="middle" fill="#a3b1c2" font-size="10">${p.day.slice(5)}</text>`)).join("");
-      const dots = pts.map((p) => {
-        if (p.codes > 0) return `<circle cx="${p.x}" cy="${p.y}" r="4.5" fill="#2f7cf6" stroke="#fff" stroke-width="2"/>`;
-        return `<circle cx="${p.x}" cy="${p.y}" r="3" fill="#fff" stroke="#2f7cf6" stroke-width="1.5"/>`;
+      const labels = pts.map((point, index) => (index % labelStep !== 0 ? "" : `<text x="${point.x.toFixed(2)}" y="${H - 12}" text-anchor="middle" fill="#b7c3d1" font-size="11">${escapeHtml(point.axis)}</text>`)).join("");
+      const dots = pts.filter((point) => point.value > 0).map((point) => `<circle cx="${point.x.toFixed(2)}" cy="${point.y.toFixed(2)}" r="4.2" fill="#2f7cf6" stroke="#fff" stroke-width="2"/>`).join("");
+      const hits = pts.map((point, index) => {
+        const left = index === 0 ? pad.l : (pts[index - 1].x + point.x) / 2;
+        const right = index === pts.length - 1 ? W - pad.r : (point.x + pts[index + 1].x) / 2;
+        return `<rect x="${left.toFixed(2)}" y="${pad.t}" width="${Math.max(right - left, 1).toFixed(2)}" height="${plotH.toFixed(2)}" fill="transparent" data-tip="${attrText(point.tip)}" data-display="${attrText(point.display)}" data-x="${point.x.toFixed(2)}"></rect>`;
       }).join("");
-      const hits = pts.map((p) => `<button type="button" class="chart-hit" style="left:${(p.x / W) * 100}%; top:${(p.y / H) * 100}%" data-day="${p.day}" data-codes="${p.codes}" aria-label="${p.day} 使用 ${p.codes} 个"></button>`).join("");
       wrap.innerHTML = `
-        <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="每日使用验证码折线图">
-          <text x="8" y="12" fill="#a3b1c2" font-size="10">使用数量（个）</text>
-          ${hGrid}${vGrid}
-          <path d="${area}" fill="url(#areaFill)" />
-          <path d="${line}" fill="none" stroke="#2f7cf6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-          ${dots}${labels}
+        <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${attrText(options.ariaLabel)}">
+          <text x="${pad.l}" y="14" fill="#c5d0dc" font-size="11">${escapeHtml(options.unit)}</text>
+          ${hGrid}
+          <path d="${area}" fill="url(#${options.gradientId})"></path>
+          <path d="${line}" fill="none" stroke="#2f7cf6" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path>
+          <line data-guide x1="0" y1="${pad.t}" x2="0" y2="${H - pad.b}" stroke="#d7e4f3" stroke-width="1" visibility="hidden"></line>
+          ${dots}
+          ${labels}
+          ${hits}
           <defs>
-            <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#2f7cf6" stop-opacity="0.12"/>
-              <stop offset="100%" stop-color="#2f7cf6" stop-opacity="0.01"/>
+            <linearGradient id="${options.gradientId}" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#2f7cf6" stop-opacity="0.16"></stop>
+              <stop offset="100%" stop-color="#2f7cf6" stop-opacity="0.02"></stop>
             </linearGradient>
           </defs>
         </svg>
-        <div class="chart-tip" id="lineTip"><div class="tip-day"></div><div class="tip-val"></div></div>
-        ${hits}
+        <div class="chart-tip" aria-hidden="true"><div class="tip-day"></div><div class="tip-metric"></div><div class="tip-val"></div></div>
       `;
-      const tip = $("lineTip");
-      wrap.querySelectorAll(".chart-hit").forEach((hit) => {
-        hit.addEventListener("pointerenter", () => {
-          tip.querySelector(".tip-day").textContent = hit.dataset.day;
-          tip.querySelector(".tip-val").innerHTML = `使用 <b>${hit.dataset.codes}</b> 个`;
-          tip.style.left = hit.style.left;
-          tip.style.top = hit.style.top;
-          tip.style.transform = "translate(-50%,-118%)";
+      const tip = wrap.querySelector(".chart-tip");
+      const guide = wrap.querySelector("[data-guide]");
+      const hideTip = () => {
+        tip.classList.remove("show");
+        tip.setAttribute("aria-hidden", "true");
+        guide.setAttribute("visibility", "hidden");
+      };
+      if (wrap._hideTip) wrap.removeEventListener("pointerleave", wrap._hideTip);
+      wrap._hideTip = hideTip;
+      wrap.querySelectorAll("rect").forEach((hit) => {
+        hit.addEventListener("pointerenter", (event) => {
+          tip.querySelector(".tip-day").textContent = hit.dataset.tip || "";
+          tip.querySelector(".tip-metric").textContent = options.metricLabel;
+          tip.querySelector(".tip-val").textContent = hit.dataset.display || "";
+          const bounds = wrap.getBoundingClientRect();
+          tip.style.left = `${event.clientX - bounds.left}px`;
+          tip.style.top = `${event.clientY - bounds.top}px`;
+          tip.style.transform = "translate(-50%, calc(-100% - 12px))";
           tip.classList.add("show");
+          tip.setAttribute("aria-hidden", "false");
+          guide.setAttribute("x1", hit.dataset.x);
+          guide.setAttribute("x2", hit.dataset.x);
+          guide.setAttribute("visibility", "visible");
         });
-        hit.addEventListener("pointerleave", () => tip.classList.remove("show"));
+        hit.addEventListener("pointerleave", hideTip);
       });
+      wrap.addEventListener("pointerleave", wrap._hideTip);
+    }
+
+    function renderRanking(container, title, rows, emptyText) {
+      if (!rows.length) {
+        container.innerHTML = `<h3>${escapeHtml(title)}</h3><div class="rank-empty">${escapeHtml(emptyText)}</div>`;
+        return;
+      }
+      container.innerHTML = `<h3>${escapeHtml(title)}</h3><ol class="rank-list">${rows.map((item, index) => `
+        <li>
+          <span class="rank-no${index >= 3 ? " late" : ""}">${index + 1}</span>
+          <span class="rank-label">${escapeHtml(item.label)}</span>
+          <span class="rank-value">${escapeHtml(item.valueText)}</span>
+        </li>`).join("")}</ol>`;
+    }
+
+    function renderDailyTrend(days) {
+      const list = Array.isArray(days) ? days : [];
+      const total = list.reduce((sum, item) => sum + Number(item.codes || 0), 0);
+      const average = list.length ? total / list.length : 0;
+      let peak = null;
+      list.forEach((item) => {
+        const codes = Number(item.codes || 0);
+        if (!codes) return;
+        if (!peak || codes > peak.codes || (codes === peak.codes && String(item.day) > peak.day)) peak = { day: String(item.day), codes };
+      });
+      $("dailySummary").innerHTML = `
+        <span>本周期使用 <b>${total.toLocaleString()}</b> 个</span>
+        <span>日均 <b>${average.toFixed(2)}</b> 个</span>
+        <span>峰值 <b>${peak ? `${escapeHtml(peak.day.slice(5))} · ${peak.codes}` : "暂无"}</b>${peak ? " 个" : ""}</span>`;
+      renderTrendChart($("dailyUsageChart"), list.map((item) => ({
+        axis: String(item.day).slice(5),
+        tip: String(item.day),
+        value: Number(item.codes || 0),
+        display: `${Number(item.codes || 0)} 个`,
+      })), {
+        emptyText: "当前周期暂无验证码使用数据",
+        ariaLabel: "每日使用的验证码折线图",
+        metricLabel: "使用验证码",
+        unit: "个",
+        gradientId: "dailyAreaFill",
+        money: false,
+      });
+      const ranked = list
+        .filter((item) => Number(item.codes) > 0)
+        .sort((left, right) => Number(right.codes) - Number(left.codes) || String(right.day).localeCompare(String(left.day)))
+        .slice(0, 7)
+        .map((item) => ({ label: String(item.day), valueText: String(item.codes) }));
+      renderRanking($("dailyRanking"), "使用量排名", ranked, "暂无使用记录");
     }
 
     const TREEMAP_COLORS = ["#3b82f6", "#34c759", "#f0a04b", "#8b7cf8", "#f072a8", "#5b9dff", "#7a93ad", "#c5ced9", "#67c8e3", "#f59e0b"];
@@ -1045,42 +1231,100 @@
         </div>`).join("");
     }
 
-    function renderWeeklyChart(rows) {
-      const list = Array.isArray(rows) ? rows : [];
-      if (!list.length) {
-        $("weeklyChart").innerHTML = '<div class="empty" style="padding:30px 0">暂无近 7 天数据</div>';
-        return;
-      }
-      const W = 420, H = 140, pad = { l: 28, r: 28, t: 18, b: 24 };
-      const maxU = Math.max(12, ...list.map((item) => item.usage ?? 0));
-      const maxA = Math.max(8, ...list.map((item) => item.amount ?? 0));
-      const groupW = (W - pad.l - pad.r) / list.length;
-      const bars = list.map((item, i) => {
-        const cx = pad.l + i * groupW + groupW / 2;
-        const usage = Number(item.usage ?? 0);
-        const amount = Number(item.amount ?? 0);
-        const h1 = (usage / maxU) * (H - pad.t - pad.b);
-        const h2 = (amount / maxA) * (H - pad.t - pad.b);
-        const y1 = H - pad.b - h1;
-        const y2 = H - pad.b - h2;
-        const labels = usage || amount
-          ? `<text x="${cx - 7}" y="${y1 - 4}" text-anchor="middle" fill="#2f7cf6" font-size="10" font-weight="700">${usage}</text>
-             <text x="${cx + 7}" y="${y2 - 4}" text-anchor="middle" fill="#34c759" font-size="10" font-weight="700">${amount.toFixed(2)}</text>`
-          : "";
-        return `<rect x="${cx - 9}" y="${y1}" width="7" height="${Math.max(h1, usage ? 2 : 0)}" rx="2" fill="#2f7cf6"/>
-          <rect x="${cx + 2}" y="${y2}" width="7" height="${Math.max(h2, amount ? 2 : 0)}" rx="2" fill="#34c759"/>
-          ${labels}
-          <text x="${cx}" y="${H - 6}" text-anchor="middle" fill="#a3b1c2" font-size="10">${item.day}</text>`;
+    function renderWeeklyTrend() {
+      const list = Array.isArray(state.overview?.weeklyStats) ? state.overview.weeklyStats : [];
+      const amountMode = state.weeklyMetric === "amount";
+      if ($("weeklySub")) $("weeklySub").textContent = amountMode ? "最近 7 天验证码使用金额" : "最近 7 天验证码首次使用数量";
+      const ranked = list
+        .map((item, index) => ({
+          ...item,
+          index,
+          sortValue: amountMode ? Number(item.fen ?? Math.round(Number(item.amount || 0) * 100)) : Number(item.usage || 0),
+        }))
+        .filter((item) => item.sortValue > 0)
+        .sort((left, right) => right.sortValue - left.sortValue || right.index - left.index)
+        .slice(0, 7)
+        .map((item) => ({
+          label: String(item.day),
+          valueText: amountMode ? `¥${(item.sortValue / 100).toFixed(2)}` : String(item.usage),
+        }));
+      renderRanking($("weeklyRanking"), amountMode ? "金额排名" : "使用量排名", ranked, amountMode ? "暂无金额记录" : "暂无使用记录");
+      renderTrendChart($("weeklyChart"), list.map((item) => {
+        const fen = Number(item.fen ?? Math.round(Number(item.amount || 0) * 100));
+        const amount = fen / 100;
+        const usage = Number(item.usage || 0);
+        return {
+          axis: String(item.day),
+          tip: String(item.day),
+          value: amountMode ? amount : usage,
+          display: amountMode ? `¥${amount.toFixed(2)}` : `${usage} 个`,
+        };
+      }), {
+        emptyText: amountMode ? "近7天暂无金额数据" : "近7天暂无使用数据",
+        ariaLabel: amountMode ? "近7天金额趋势折线图" : "近7天使用量折线图",
+        metricLabel: amountMode ? "金额" : "使用量",
+        unit: amountMode ? "元" : "个",
+        gradientId: "weeklyAreaFill",
+        money: amountMode,
+      });
+    }
+
+    function renderRelationshipDistribution(data) {
+      const items = Array.isArray(data?.items) ? data.items : [];
+      const total = Number(data?.totalCompletedTests || 0);
+      const top = data?.topType;
+      if ($("relDateRangeText")) $("relDateRangeText").textContent = data?.range ? `${data.range.start} → ${data.range.end}` : "—";
+      const cards = [
+        { label: "完成测试", value: total.toLocaleString(), note: "已生成关系结果", title: "已完成双方测试并生成关系结果" },
+        { label: "已出现关系类型", value: `${Number(data?.distinctTypes || 0)} / 24`, note: "当前时间范围", title: "当前时间范围内实际出现的关系类型" },
+        { label: "占比最高关系", value: top ? top.name : "—", note: top ? `${Number(top.pct).toFixed(2)}%` : "当前时间范围", title: top ? top.name : "暂无", compact: Boolean(top) },
+        { label: "Top5 合计", value: `${Number(data?.top5Pct || 0).toFixed(2)}%`, note: "前五种关系占全部测试", title: "前五种关系占当前时间范围内全部完成双人测试的比例" },
+      ];
+      $("relKpis").innerHTML = cards.map((item) => `<article class="stat-card tone-blue" title="${attrText(item.title)}">
+          <div>
+            <div class="stat-label">${escapeHtml(item.label)}</div>
+            <div class="stat-value${item.compact ? " compact" : ""}">${escapeHtml(String(item.value))}</div>
+            <div class="stat-delta quiet">${escapeHtml(item.note)}</div>
+          </div>
+        </article>`).join("");
+      const positive = items.filter((item) => Number(item.count) > 0);
+      const lowest = positive.reduce((best, item) => {
+        if (!best || item.count < best.count || (item.count === best.count && item.code < best.code)) return item;
+        return best;
+      }, null);
+      $("relDigest").innerHTML = total && top && lowest
+        ? `<span>最高：<b>${escapeHtml(top.name)}</b> ${Number(top.pct).toFixed(2)}%</span><span>最低：<b>${escapeHtml(lowest.name)}</b> ${Number(lowest.pct).toFixed(2)}%</span><span>Top5：<b>${Number(data.top5Pct || 0).toFixed(2)}%</b></span>`
+        : "暂无真实测试数据";
+      $("relTotal").textContent = `共 ${total.toLocaleString()} 组测试`;
+      const shareTitle = "占当前时间范围内全部完成双人测试的比例";
+      $("relList").innerHTML = items.map((item, index) => {
+        const pct = Number(item.pct || 0);
+        const flag = !total
+          ? ""
+          : pct > 15
+            ? '<span class="rel-flag high">偏高</span>'
+            : pct < 0.5
+              ? '<span class="rel-flag low">偏低</span>'
+              : '<span class="rel-flag">正常</span>';
+        return `<div class="rel-row">
+          <span class="rel-rank${index < 3 ? " top" : ""}">${index + 1}</span>
+          <span class="rel-code">${escapeHtml(item.code)}</span>
+          <div class="rel-name">${escapeHtml(item.name)}${flag}</div>
+          <div class="rel-track" title="${shareTitle}"><div class="rel-fill" style="width:${Math.max(0, Math.min(pct, 100))}%"></div></div>
+          <div class="rel-stat" title="${shareTitle}">${Number(item.count || 0).toLocaleString()} 次 · <span>${pct.toFixed(2)}%</span></div>
+        </div>`;
       }).join("");
-      const leftAxis = [0, Math.round(maxU / 4), Math.round(maxU / 2), Math.round((maxU * 3) / 4), maxU].map((v) => {
-        const yy = pad.t + (1 - v / maxU) * (H - pad.t - pad.b);
-        return `<line x1="${pad.l}" y1="${yy}" x2="${W - pad.r}" y2="${yy}" stroke="#eef2f7"/><text x="${pad.l - 6}" y="${yy + 3}" text-anchor="end" fill="#b0bdcc" font-size="9">${v}</text>`;
-      }).join("");
-      const rightAxis = [0, maxA / 4, maxA / 2, (maxA * 3) / 4, maxA].map((v) => {
-        const yy = pad.t + (1 - v / maxA) * (H - pad.t - pad.b);
-        return `<text x="${W - pad.r + 6}" y="${yy + 3}" text-anchor="start" fill="#b0bdcc" font-size="9">${Number(v.toFixed(1))}</text>`;
-      }).join("");
-      $("weeklyChart").innerHTML = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">${leftAxis}${rightAxis}${bars}</svg>`;
+      const unknown = Number(data?.ignoredUnknownCount || 0);
+      $("relNote").textContent = unknown > 0
+        ? `另有 ${unknown} 条未识别关系类型未列入 24 种正式结果。${shareTitle}`
+        : shareTitle;
+    }
+
+    async function loadRelationshipDistribution() {
+      const data = await api(`/api/admin/relationship-distribution?days=${state.relationshipRangeDays || 30}`);
+      state.relationshipDistribution = data;
+      renderRelationshipDistribution(data);
+      return data;
     }
 
     function renderRecentUsageTable(rows) {
@@ -1093,7 +1337,7 @@
         <tr>
           <td>${escapeHtml(item.time)}</td>
           <td class="code">${escapeHtml(item.code)}</td>
-          <td>${escapeHtml(item.agent || "未分配")}</td>
+          <td>${escapeHtml(item.agent || "—")}</td>
           <td><span class="badge">${escapeHtml(item.status || "已使用")}</span></td>
         </tr>`).join("");
     }
@@ -1110,10 +1354,10 @@
         { label: "累计金额", value: yuan(Number(kpis.totalFen ?? 0)).replace("¥", "¥ "), delta: deltas.totalFen, tone: "rose", icon: "yen" },
       ]);
       if (data?.range) $("dateRangeText").textContent = `${data.range.start} → ${data.range.end}`;
-      renderDailyUsageChart(data?.dailyUsage || []);
+      renderDailyTrend(data?.dailyUsage || []);
       renderTreemap(state.treemapMode);
       renderDonutChart(data?.donut || { total: 0, items: [] });
-      renderWeeklyChart(data?.weeklyStats || []);
+      renderWeeklyTrend();
       renderRecentUsageTable(data?.recentUsage || []);
     }
 
@@ -1121,7 +1365,6 @@
       const data = await api(`/api/admin/overview?days=${state.rangeDays || 30}`);
       const revenue = data?.revenue || {};
       const inventory = data?.agentInventory || { threshold: 30, agents: [], lowStockCount: 0 };
-      const codes = data?.codes || {};
       state.threshold = Number(inventory.threshold ?? 30);
       const priceFen = Number(revenue.priceFen);
       if (Number.isFinite(priceFen)) state.priceFen = priceFen;
@@ -1133,7 +1376,6 @@
       if ($("moneyTotal")) $("moneyTotal").textContent = yuan(Number(revenue.totalFen ?? 0));
       renderOverviewFromData(data);
       renderLowStock(inventory);
-      renderUnassigned(Number(codes.unassigned ?? 0));
       return data;
     }
 
@@ -1149,17 +1391,6 @@
           <td><button class="btn small" data-topup="${item.id}">＋ 加码</button></td>
         </tr>`).join("")}</tbody></table></div>`;
       document.querySelectorAll("[data-topup]").forEach((button) => button.addEventListener("click", () => openGenerate(button.dataset.topup)));
-    }
-
-    function renderUnassigned(count) {
-      if (!count) { $("unassignedBanner").innerHTML = ""; return; }
-      $("unassignedBanner").innerHTML = `<div class="warn-banner"><span>⚠ ${count} 个历史验证码尚未分配代理人</span><button class="btn small secondary" id="viewUnassigned">查看</button></div>`;
-      $("viewUnassigned").addEventListener("click", () => {
-        $("agentSelect").value = "unassigned";
-        state.page = 1;
-        showView("codes");
-        loadCodes().catch((error) => showToast(error.message, true));
-      });
     }
 
     async function loadAgents() {
@@ -1180,16 +1411,17 @@
     function fillAgentSelects(items) {
       const filter = $("agentSelect").value;
       const gen = $("genAgent").value;
-      const options = items.map((item) => `<option value="${item.id}">${escapeHtml(agentLabel(item))}</option>`).join("");
+      const options = items.filter((item) => !item.deleted).map((item) => `<option value="${item.id}">${escapeHtml(agentLabel(item))}</option>`).join("");
       const activeOptions = items.filter((item) => !item.deleted).map((item) => `<option value="${item.id}">${escapeHtml(item.name)}</option>`).join("");
-      $("agentSelect").innerHTML = `<option value="">全部代理人</option><option value="unassigned">未分配</option>${options}`;
+      $("agentSelect").innerHTML = `<option value="">全部代理人</option>${options}`;
       $("genAgent").innerHTML = `<option value="">请选择代理人</option>${activeOptions}`;
-      $("agentSelect").value = items.some((item) => item.id === filter) || filter === "unassigned" || filter === "" ? filter : "";
+      $("agentSelect").value = items.some((item) => item.id === filter) || filter === "" ? filter : "";
       $("genAgent").value = items.some((item) => item.id === gen && !item.deleted) ? gen : "";
       $("genSubmit").disabled = !$("genAgent").value;
     }
 
     function renderAgents(items) {
+      items = items.filter((item) => !item.deleted);
       if (!items.length) {
         $("agentRows").innerHTML = '<tr><td colspan="7" class="empty">还没有代理人<br>创建第一个代理人后即可开始分配验证码。</td></tr>';
         return;
@@ -1204,6 +1436,7 @@
           <td class="ops">
             ${item.deleted ? "" : `<button class="btn small" data-generate="${item.id}">＋ 加码</button>`}
             <button class="text-btn" data-detail="${item.id}">查看</button>
+            ${item.deleted ? "" : `<button class="text-btn off" data-delete="${item.id}" data-name="${escapeHtml(item.name)}" data-count="${item.codes}">删除</button>`}
             <details class="more"><summary>···</summary>
               <div class="more-menu">
                 <button data-detail="${item.id}">查看详情</button>
@@ -1237,7 +1470,7 @@
         return;
       }
       $("codeRows").innerHTML = data.items.map((item) => {
-        const agent = item.agent ? (item.agent.deletedAt ? `${item.agent.name}（已删除）` : item.agent.name) : "未分配";
+        const agent = item.agent ? (item.agent.deletedAt ? `${item.agent.name}（已删除）` : item.agent.name) : "—";
         return `<tr>
           <td class="code">${escapeHtml(item.code)}</td>
           <td><span class="badge ${item.isActive ? "" : "off"}">${item.isActive ? "有效" : "已停用"}</span></td>
@@ -1301,7 +1534,7 @@
 
     function askDelete(id, name, count) {
       state.pendingDelete = { id, name, count };
-      $("confirmText").textContent = `确定删除代理人“${name}”吗？\n\n未使用的验证码会回到号码池。已使用的验证码仍记在「${name}（已删除）」名下。`;
+      $("confirmText").textContent = `确定删除代理人“${name}”吗？\n\n名下 ${count} 个验证码会全部回到号码池，包括已使用的。这些号码之后可以重新生成。`;
       $("confirmDialog").showModal();
     }
 
@@ -1353,18 +1586,39 @@
       renderLoggedOutView("", "你已安全退出登录");
     });
     $("settingsBtn").addEventListener("click", () => showView("settings"));
+    function pressButtons(container, button) {
+      container.querySelectorAll("button").forEach((item) => {
+        const on = item === button;
+        item.classList.toggle("active", on);
+        item.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+    }
     $("rangeTabs").addEventListener("click", (event) => {
       const btn = event.target.closest("[data-range]");
       if (!btn) return;
       state.rangeDays = Number(btn.dataset.range);
-      $("rangeTabs").querySelectorAll("button").forEach((item) => item.classList.toggle("active", item === btn));
+      pressButtons($("rangeTabs"), btn);
       loadOverview().catch((error) => { if (error.status !== 401) showToast(error.message, true); });
+    });
+    $("relRangeTabs").addEventListener("click", (event) => {
+      const btn = event.target.closest("[data-range]");
+      if (!btn) return;
+      state.relationshipRangeDays = Number(btn.dataset.range);
+      pressButtons($("relRangeTabs"), btn);
+      loadRelationshipDistribution().catch((error) => { if (error.status !== 401) showToast(error.message, true); });
+    });
+    $("weeklyMetric").addEventListener("click", (event) => {
+      const btn = event.target.closest("[data-metric]");
+      if (!btn) return;
+      state.weeklyMetric = btn.dataset.metric === "amount" ? "amount" : "usage";
+      pressButtons($("weeklyMetric"), btn);
+      renderWeeklyTrend();
     });
     $("treemapMode").addEventListener("click", (event) => {
       const btn = event.target.closest("[data-mode]");
       if (!btn) return;
       state.treemapMode = btn.dataset.mode;
-      $("treemapMode").querySelectorAll("button").forEach((item) => item.classList.toggle("active", item === btn));
+      pressButtons($("treemapMode"), btn);
       renderTreemap(state.treemapMode);
     });
     $("viewMoreRecords").addEventListener("click", () => {
@@ -1468,9 +1722,9 @@
     $("confirmDelete").addEventListener("click", async () => {
       if (!state.pendingDelete) return;
       try {
-        await api(`/api/admin/agents/${state.pendingDelete.id}`, { method: "DELETE" });
+        const data = await api(`/api/admin/agents/${state.pendingDelete.id}`, { method: "DELETE" });
         $("confirmDialog").close();
-        showToast("代理人已删除，未使用的验证码已回到号码池");
+        showToast(`代理人已删除，${Number(data.released || 0)} 个验证码已回到号码池`);
         await Promise.all([loadOverview(), loadAgents(), loadCodes()]);
       } catch (error) { if (error.status !== 401) showToast(error.message, true); }
     });

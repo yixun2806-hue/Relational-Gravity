@@ -222,7 +222,7 @@ export function runDistribution(input: { personalSamples: number; pairSamples: n
       if (!rolesFlipped(forward, reverse)) swapMismatches += 1;
       const competition = competitionOf(top);
       const evidence = evidenceMean(top);
-      if (!finiteInRange(top.score) || !finiteInRange(top.eligibility) || !finiteInRange(competition) || !Number.isFinite(evidence)) {
+      if (!finiteInRange(top.score) || !finiteInRange(top.eligibility) || !Number.isFinite(competition) || !Number.isFinite(evidence)) {
         invalidSamples += 1;
       }
       tiers[top.tier] += 1;

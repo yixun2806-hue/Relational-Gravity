@@ -39,12 +39,6 @@ const INDEX_DIMS: Record<(typeof INDEX_KEYS)[number], DimKey[]> = {
   abstract: ["abstract", "novelty"],
 };
 
-const LEAD: Record<WordingStrength, string> = {
-  strong: "你们很典型地呈现",
-  moderate: "你们比较明显地呈现",
-  tentative: "在当前结果中，你们更接近",
-};
-
 export function wordingStrengthFor(tier: SelectionTier): WordingStrength {
   if (tier === "eligible") return "strong";
   if (tier === "borderline") return "moderate";
@@ -207,11 +201,11 @@ function comparisonOf(a: DimensionScores, b: DimensionScores): DimensionComparis
     const label = DIMENSION_LABELS[key];
     const summary = side === "tie"
       ? (aValue >= 65
-        ? `A和B的${label}都偏高，目前是A为${aValue}，B为${bValue}。`
+        ? `A和B的${label}都偏高。A是${aValue}，B是${bValue}。`
         : aValue <= 35
-          ? `A和B的${label}都偏低，目前是A为${aValue}，B为${bValue}。`
-          : `A和B的${label}接近，而且都靠近中间，A为${aValue}，B为${bValue}。`)
-      : `${side === "a" ? "A" : "B"}的${label}明显高于${side === "a" ? "B" : "A"}，A为${aValue}，B为${bValue}。`;
+          ? `A和B的${label}都偏低。A是${aValue}，B是${bValue}。`
+          : `A和B的${label}接近，而且都靠近中间。A是${aValue}，B是${bValue}。`)
+      : `${side === "a" ? "A" : "B"}的${label}明显高于${side === "a" ? "B" : "A"}。A是${aValue}，B是${bValue}。`;
     return { key, label, aValue, bValue, difference, similarity, higherSide: side, importance, summary };
   });
 }
@@ -270,8 +264,8 @@ function fact(row: DimensionComparisonItem, strength: number, kind: "similar" | 
   if (kind === "similar") {
     const high = row.aValue >= 65;
     const summary = high
-      ? `A和B的${row.label}都偏高，A为${row.aValue}，B为${row.bValue}。`
-      : `A和B的${row.label}都偏低，A为${row.aValue}，B为${row.bValue}。`;
+      ? `A和B的${row.label}都偏高，A是${row.aValue}，B是${row.bValue}。`
+      : `A和B的${row.label}都偏低，A是${row.aValue}，B是${row.bValue}。`;
     const explanation = row.key === "boundary"
       ? "A和B都比较重视个人边界，因此即使关系亲密，也不会要求彼此时时在线。"
       : row.key === "independence" && high
@@ -395,6 +389,14 @@ function indexParts(a: DimensionScores, b: DimensionScores): Record<(typeof INDE
   };
 }
 
+function indexFeeling(key: (typeof INDEX_KEYS)[number], level: IndexDetail["level"]): string {
+  const name = INDEX_LABELS[key].replace(/指数$/, "");
+  if (level === "high") return `${name}这一块，你们现在挺稳。`;
+  if (level === "good") return `${name}这一块，大体是顺的。`;
+  if (level === "medium") return `${name}这一块，不差，也还没那么稳。`;
+  return `${name}这一块，是你们比较需要慢慢磨的地方。`;
+}
+
 function indicesDetailed(a: DimensionScores, b: DimensionScores, indices: RelationshipIndices): IndexDetail[] {
   const parts = indexParts(a, b);
   return INDEX_KEYS.map((key) => {
@@ -407,9 +409,9 @@ function indicesDetailed(a: DimensionScores, b: DimensionScores, indices: Relati
       value,
       level: level.level,
       levelLabel: level.label,
-      summary: `${INDEX_LABELS[key]}为${value}，当前${level.label}。`,
+      summary: indexFeeling(key, level.level),
       explanation: `${INDEX_LABELS[key]}看的是${parts[key].map((part) => part.name).join("、")}。${factorLine(parts[key])}`,
-      evidence: dims.map((dim) => `A的${DIMENSION_LABELS[dim]}为${a[dim]}，B的${DIMENSION_LABELS[dim]}为${b[dim]}。`),
+      evidence: dims.map((dim) => `A的${DIMENSION_LABELS[dim]}是${a[dim]}，B的${DIMENSION_LABELS[dim]}是${b[dim]}。`),
     };
   });
 }
@@ -447,8 +449,8 @@ function strengthsOf(indices: RelationshipIndices, similarities: FactItem[], com
     items.push({
       score: indices[key],
       title: `${INDEX_LABELS[key]}比较稳`,
-      evidence: `${INDEX_LABELS[key]}为${indices[key]}。`,
-      explanation: `${INDEX_LABELS[key]}到了${indices[key]}，这是双方当前数据里比较正向的一块。`,
+      evidence: `${INDEX_LABELS[key]}是${indices[key]}。`,
+      explanation: `${INDEX_LABELS[key]}到了${indices[key]}，这是你们现在比较站得住的一块。`,
     });
   }
   for (const item of similarities.filter((factItem) => factItem.strength >= 60 && !rejectedStrength(factItem.explanation ?? "")).slice(0, 2)) {
@@ -512,7 +514,7 @@ function risksOf(a: DimensionScores, b: DimensionScores): RiskItem[] {
   if (replyHit) candidates.push({
     score: clamp(Math.max(a.replySensitivity - b.emotionExpression, b.replySensitivity - a.emotionExpression) * 0.7 + 20),
     title: "回复空窗被读成态度",
-    evidence: `A的已读乱想指数为${a.replySensitivity}，表达指数为${a.emotionExpression}；B的已读乱想指数为${b.replySensitivity}，表达指数为${b.emotionExpression}。`,
+    evidence: `A的已读乱想指数是${a.replySensitivity}，表达指数是${a.emotionExpression}；B的已读乱想指数是${b.replySensitivity}，表达指数是${b.emotionExpression}。`,
     mechanism: a.replySensitivity >= b.replySensitivity
       ? "A更会把回复变慢读成态度，B更慢把状态说出来。"
       : "B更会把回复变慢读成态度，A更慢把状态说出来。",
@@ -521,7 +523,7 @@ function risksOf(a: DimensionScores, b: DimensionScores): RiskItem[] {
   if (securityHit && hasDirectionalEvidence(a.securityNeed, b.securityNeed)) candidates.push({
     score: clamp(Math.abs(a.securityNeed - b.securityNeed) * 1.2),
     title: "安全感需求没有对齐",
-    evidence: `A的安心需求为${a.securityNeed}，B的安心需求为${b.securityNeed}。`,
+    evidence: `A的安心需求是${a.securityNeed}，B的安心需求是${b.securityNeed}。`,
     mechanism: a.securityNeed > b.securityNeed
       ? "A更需要确认，B更容易把反复确认理解成不信任。"
       : "B更需要确认，A更容易把反复确认理解成不信任。",
@@ -530,21 +532,21 @@ function risksOf(a: DimensionScores, b: DimensionScores): RiskItem[] {
   if (spaceHit) candidates.push({
     score: clamp(Math.max(Math.abs(a.companionship - b.independence), Math.abs(b.companionship - a.independence))),
     title: "靠近和独处抢同一个时段",
-    evidence: `A的黏人指数为${a.companionship}、独处充电指数为${a.independence}；B的黏人指数为${b.companionship}、独处充电指数为${b.independence}。`,
+    evidence: `A的黏人指数是${a.companionship}、独处充电指数是${a.independence}；B的黏人指数是${b.companionship}、独处充电指数是${b.independence}。`,
     mechanism: aSeeks ? "A更用靠近确认关系，B更用后退恢复电量。" : "B更用靠近确认关系，A更用后退恢复电量。",
     suggestion: "把独处和相处都约出结束时间，而不是临时互相说服。",
   });
   if (investHit) candidates.push({
     score: clamp(Math.abs(a.investment - b.investment) * 1.3),
     title: "投入看起来不对称",
-    evidence: `A的上头指数为${a.investment}，B的上头指数为${b.investment}。`,
+    evidence: `A的上头指数是${a.investment}，B的上头指数是${b.investment}。`,
     mechanism: a.investment > b.investment ? "A更用安排表达在乎，B保留自己的节奏。" : "B更用安排表达在乎，A保留自己的节奏。",
     suggestion: "只约定一件双方都确认的小事，并写明谁来发起。",
   });
   if (emotionHit) candidates.push({
     score: clamp(Math.abs(a.emotionSensitivity - b.emotionSensitivity) * 1.2),
     title: "情绪识别速度不同",
-    evidence: `A的情绪雷达为${a.emotionSensitivity}，B的情绪雷达为${b.emotionSensitivity}。`,
+    evidence: `A的情绪雷达是${a.emotionSensitivity}，B的情绪雷达是${b.emotionSensitivity}。`,
     mechanism: directionLevel(a.emotionSensitivity, b.emotionSensitivity) === "clear"
       ? (a.emotionSensitivity > b.emotionSensitivity ? "A更快感到气氛变化，B还停留在事情本身。" : "B更快感到气氛变化，A还停留在事情本身。")
       : "两边对气氛的敏感度有一点差别，还没到完全错位。",
@@ -555,7 +557,7 @@ function risksOf(a: DimensionScores, b: DimensionScores): RiskItem[] {
     candidates.push({
       score: clamp(Math.max(a.conflictInitiative, b.conflictInitiative) * 0.4 + Math.max(a.conflictAvoidance, b.conflictAvoidance) * 0.35 + Math.abs(a.communication - b.communication) * 0.25),
       title: "冲突节奏互相加码",
-      evidence: `A的吵架解决欲为${a.conflictInitiative}、冷静指数为${a.conflictAvoidance}、开麦指数为${a.communication}；B的吵架解决欲为${b.conflictInitiative}、冷静指数为${b.conflictAvoidance}、开麦指数为${b.communication}。`,
+      evidence: `A的吵架解决欲是${a.conflictInitiative}、冷静指数是${a.conflictAvoidance}、开麦指数是${a.communication}；B的吵架解决欲是${b.conflictInitiative}、冷静指数是${b.conflictAvoidance}、开麦指数是${b.communication}。`,
       mechanism: aPursues ? "A更想马上把话说完，B更需要先暂停。" : "B更想马上把话说完，A更需要先暂停。",
       suggestion: "需要暂停时，先说清回来继续的时间，暂停期间不再追加质问。",
     });
@@ -564,21 +566,21 @@ function risksOf(a: DimensionScores, b: DimensionScores): RiskItem[] {
   if (bothCloseHigh(a, b, "independence")) shared.push({
     score: clamp(((a.independence + b.independence) / 2 - 50) * 1.6),
     title: "空间给得太默契",
-    evidence: `A的独处充电指数为${a.independence}，B为${b.independence}；黏人指数分别是${a.companionship}和${b.companionship}。`,
+    evidence: `A的独处充电指数是${a.independence}，B是${b.independence}；黏人指数分别是${a.companionship}和${b.companionship}。`,
     mechanism: "你们两个人都同时需要陪伴和空间，因此真正容易出现的问题不是谁追谁逃，而是双方都默认对方理解自己的节奏。",
     suggestion: "即使感觉差不多，也用一句事实确认彼此理解的是同一件事。",
   });
   if (bothCloseHigh(a, b, "communication")) shared.push({
     score: clamp(((a.communication + b.communication) / 2 - 50) * 1.4),
     title: "都以为自己已经说清楚",
-    evidence: `A的开麦指数为${a.communication}，B的开麦指数为${b.communication}。`,
+    evidence: `A的开麦指数是${a.communication}，B的开麦指数是${b.communication}。`,
     mechanism: "两个人都比较愿意开口，也因此都可能觉得自己已经表达清楚，却没有确认对方理解的是同一件事。",
     suggestion: "说完一件事后，让对方用一句自己的话复述回来。",
   });
   if (bothCloseHigh(a, b, "conflictInitiative")) shared.push({
     score: clamp(((a.conflictInitiative + b.conflictInitiative) / 2 - 50) * 1.4),
     title: "两边都想马上推进",
-    evidence: `A的吵架解决欲为${a.conflictInitiative}，B的吵架解决欲为${b.conflictInitiative}。`,
+    evidence: `A的吵架解决欲是${a.conflictInitiative}，B的吵架解决欲是${b.conflictInitiative}。`,
     mechanism: "两个人都想尽快处理问题，容易抢着进入解决方案，谁都还没被听完。",
     suggestion: "下一次同时想说完时，轮流各说一句，听完再回应。",
   });
@@ -740,12 +742,12 @@ function boundariesFor(scores: DimensionScores, name: "A" | "B"): string[] {
 function sameDimensionWhy(_title: string, label: string, left: number, right: number): string {
   const level = directionLevel(left, right);
   if (level === "none") {
-    return `这是大多数关系都值得提前约定的场景。A的${label}为${left}，B的${label}为${right}，两人比较接近，所以重点不是分出谁更高，而是把做法说清楚。`;
+    return `这是大多数关系都值得提前约定的场景。A的${label}是${left}，B的${label}是${right}，两人比较接近，所以重点不是分出谁更高，而是把做法说清楚。`;
   }
   const higher = left >= right ? "A" : "B";
   const lower = left >= right ? "B" : "A";
-  if (level === "mild") return `A的${label}为${left}，B的${label}为${right}。${higher}略高一些，说话时可以多照顾${lower}的节奏。`;
-  return `A的${label}为${left}，B的${label}为${right}。${higher}明显更高，这个场景值得按这个差别提前说好。`;
+  if (level === "mild") return `A的${label}是${left}，B的${label}是${right}。${higher}略高一些，说话时可以多照顾${lower}的节奏。`;
+  return `A的${label}是${left}，B的${label}是${right}。${higher}明显更高，这个场景值得按这个差别提前说好。`;
 }
 
 function extraWhy(focus: boolean, line: string): string {
@@ -767,7 +769,7 @@ function scenariosOf(a: DimensionScores, b: DimensionScores): CommunicationScena
       title: "气氛不对需要谈一谈",
       whySelected: !hasDirectionalEvidence(a.conflictInitiative, b.conflictInitiative) && !hasDirectionalEvidence(a.conflictAvoidance, b.conflictAvoidance)
         ? "这是大多数关系都值得提前约定的场景。你们目前没有表现出特别强的冲突节奏差异，因此重点不是谁更主动，而是把什么时候继续谈说清楚。"
-        : `A的吵架解决欲为${a.conflictInitiative}，B的冷静指数为${b.conflictAvoidance}。${a.conflictInitiative >= b.conflictInitiative ? "A更倾向当下把问题说开，B更需要先缓冲" : "B更倾向当下把问题说开，A更需要先缓冲"}，所以这个场景值得提前约好暂停和返回方式。`,
+        : `A的吵架解决欲是${a.conflictInitiative}，B的冷静指数是${b.conflictAvoidance}。${a.conflictInitiative >= b.conflictInitiative ? "A更倾向当下把问题说开，B更需要先缓冲" : "B更倾向当下把问题说开，A更需要先缓冲"}，所以这个场景值得提前约好暂停和返回方式。`,
       aScript: "A可以说：我想谈刚才那件事，也可以等你准备好，我们定一个时间。",
       bScript: "B可以说：我需要先缓一下，今晚或明天的具体时间再继续。",
       whyItWorks: "谈的是时间和感受，不是先判对错。",
@@ -776,7 +778,7 @@ function scenariosOf(a: DimensionScores, b: DimensionScores): CommunicationScena
       title: "想靠近或想独处",
       whySelected: !hasDirectionalEvidence(a.companionship, b.companionship) && !hasDirectionalEvidence(a.independence, b.independence)
         ? "这是大多数关系都值得提前约定的场景。你们目前没有特别强的靠近和独处落差，重点是把相处和独处的时间说具体。"
-        : `A的黏人指数为${a.companionship}，B的独处充电指数为${b.independence}。${a.companionship >= b.independence ? "A更在意靠近，B更需要自己的空间" : "B更需要自己的空间，A更在意靠近"}，所以两边都要把结束时间说清楚。`,
+        : `A的黏人指数是${a.companionship}，B的独处充电指数是${b.independence}。${a.companionship >= b.independence ? "A更在意靠近，B更需要自己的空间" : "B更需要自己的空间，A更在意靠近"}，所以两边都要把结束时间说清楚。`,
       aScript: "A可以说：我想和你待一会儿，大约半小时，也可以改到你电量够的时候。",
       bScript: "B可以说：我想自己待一会儿，到某个时间再回来找你。",
       whyItWorks: "靠近和空间都有终点，不会互相否定。",
@@ -786,7 +788,7 @@ function scenariosOf(a: DimensionScores, b: DimensionScores): CommunicationScena
     {
       score: Math.max(a.securityNeed, b.securityNeed),
       title: "缺乏安全感",
-      whySelected: extraWhy(Math.max(a.securityNeed, b.securityNeed) >= 70, `A的安心需求为${a.securityNeed}，B的安心需求为${b.securityNeed}。`),
+      whySelected: extraWhy(Math.max(a.securityNeed, b.securityNeed) >= 70, `A的安心需求是${a.securityNeed}，B的安心需求是${b.securityNeed}。`),
       aScript: "A可以说：我现在需要一句明确的确认，不是要你立刻解决全部问题。",
       bScript: "B可以说：关系还在，我今天能给你的确认是这一件具体的事。",
       whyItWorks: "确认被说成事实，而不是性格审判。",
@@ -794,7 +796,7 @@ function scenariosOf(a: DimensionScores, b: DimensionScores): CommunicationScena
     {
       score: Math.max(a.emotionSensitivity, b.emotionSensitivity),
       title: "情绪低落",
-      whySelected: extraWhy(Math.max(a.emotionSensitivity, b.emotionSensitivity) >= 70, `A的情绪雷达为${a.emotionSensitivity}，B的情绪雷达为${b.emotionSensitivity}。`),
+      whySelected: extraWhy(Math.max(a.emotionSensitivity, b.emotionSensitivity) >= 70, `A的情绪雷达是${a.emotionSensitivity}，B的情绪雷达是${b.emotionSensitivity}。`),
       aScript: "A可以说：我有点低落，现在需要被听，先不需要方案。",
       bScript: "B可以说：我听到你低落，我先陪你说完，再问要不要一起想办法。",
       whyItWorks: "先接情绪，方案放到第二步。",
@@ -802,7 +804,7 @@ function scenariosOf(a: DimensionScores, b: DimensionScores): CommunicationScena
     {
       score: Math.abs(a.dominance - b.dominance) + Math.abs(a.novelty - b.novelty),
       title: "临时改变计划",
-      whySelected: extraWhy(Math.abs(a.dominance - b.dominance) >= DIRECTION_NONE, `A的掌舵指数为${a.dominance}，B的掌舵指数为${b.dominance}。`),
+      whySelected: extraWhy(Math.abs(a.dominance - b.dominance) >= DIRECTION_NONE, `A的掌舵指数是${a.dominance}，B的掌舵指数是${b.dominance}。`),
       aScript: "A可以说：计划要改，我先给两个可选时间。",
       bScript: "B可以说：我可以改，但需要知道新的时间和这是不是最后一次变更。",
       whyItWorks: "变化仍然有选项，不会只剩下一句随便。",
@@ -810,7 +812,7 @@ function scenariosOf(a: DimensionScores, b: DimensionScores): CommunicationScena
     {
       score: Math.abs(a.conflictInitiative - b.conflictAvoidance),
       title: "吵架之后",
-      whySelected: extraWhy(Math.abs(a.conflictInitiative - b.conflictAvoidance) >= DIRECTION_CLEAR, `A的吵架解决欲为${a.conflictInitiative}，B的冷静指数为${b.conflictAvoidance}。`),
+      whySelected: extraWhy(Math.abs(a.conflictInitiative - b.conflictAvoidance) >= DIRECTION_CLEAR, `A的吵架解决欲是${a.conflictInitiative}，B的冷静指数是${b.conflictAvoidance}。`),
       aScript: "A可以说：我先停住追问，我们在约定时间只复盘一件事。",
       bScript: "B可以说：我离开不是结束，我会在约定时间回来。",
       whyItWorks: "暂停被定义成会返回的步骤。",
@@ -818,7 +820,7 @@ function scenariosOf(a: DimensionScores, b: DimensionScores): CommunicationScena
     {
       score: Math.max(a.companionship, b.companionship),
       title: "想获得陪伴",
-      whySelected: extraWhy(Math.max(a.companionship, b.companionship) >= 70, `A的黏人指数为${a.companionship}，B的黏人指数为${b.companionship}。`),
+      whySelected: extraWhy(Math.max(a.companionship, b.companionship) >= 70, `A的黏人指数是${a.companionship}，B的黏人指数是${b.companionship}。`),
       aScript: "A可以说：我今天想要一段不被打断的相处，大约半小时。",
       bScript: "B可以说：我可以给你这段时间，结束后我需要自己的恢复时间。",
       whyItWorks: "陪伴有长度，也给恢复留门。",
@@ -826,7 +828,7 @@ function scenariosOf(a: DimensionScores, b: DimensionScores): CommunicationScena
     {
       score: Math.abs(a.emotionExpression - b.emotionExpression),
       title: "对方明显变冷",
-      whySelected: extraWhy(hasDirectionalEvidence(a.emotionExpression, b.emotionExpression), `A的表达指数为${a.emotionExpression}，B的表达指数为${b.emotionExpression}。`),
+      whySelected: extraWhy(hasDirectionalEvidence(a.emotionExpression, b.emotionExpression), `A的表达指数是${a.emotionExpression}，B的表达指数是${b.emotionExpression}。`),
       aScript: "A可以说：我感觉到你话变少了，我在意的是这个变化，不是要你立刻热情。",
       bScript: "B可以说：我话少是因为电量低，不是要结束关系。",
       whyItWorks: "描述变化，不给对方定罪。",
@@ -834,7 +836,7 @@ function scenariosOf(a: DimensionScores, b: DimensionScores): CommunicationScena
     {
       score: Math.max(a.independence, b.independence),
       title: "一方特别忙",
-      whySelected: extraWhy(Math.max(a.independence, b.independence) >= 70, `A的独处充电指数为${a.independence}，B的独处充电指数为${b.independence}。`),
+      whySelected: extraWhy(Math.max(a.independence, b.independence) >= 70, `A的独处充电指数是${a.independence}，B的独处充电指数是${b.independence}。`),
       aScript: "A可以说：我接下来会比较忙，结束后我来找你。",
       bScript: "B可以说：我看到了，我等你说的那个时间，期间不再连续追问。",
       whyItWorks: "等待有一个说法，而不是一个假装算出来的钟点。",
@@ -842,7 +844,7 @@ function scenariosOf(a: DimensionScores, b: DimensionScores): CommunicationScena
     {
       score: Math.abs(a.investment - b.investment),
       title: "感觉自己付出更多",
-      whySelected: extraWhy(hasDirectionalEvidence(a.investment, b.investment), `A的上头指数为${a.investment}，B的上头指数为${b.investment}。`),
+      whySelected: extraWhy(hasDirectionalEvidence(a.investment, b.investment), `A的上头指数是${a.investment}，B的上头指数是${b.investment}。`),
       aScript: "A可以说：我最近安排得更多，我需要你明确接住其中一件。",
       bScript: "B可以说：我这次负责这一件，并告诉你完成时间。",
       whyItWorks: "付出被拆成一件可完成的事。",
@@ -1043,60 +1045,231 @@ function roastOf(name: string, pattern: ConflictPattern, who: WhoMoreInput | und
   return `${lines[pattern]}${lean}`;
 }
 
+const CLOSINGS: Record<string, { feel: string; keep: string; stuck: string; step: string; last: string }> = {
+  "冰山 × 小太阳": {
+    feel: "你们这段关系里，一个更想自己待着，一个更想被回应。两个人都在，只是靠近的方式不一样。",
+    keep: "难得的是，冷的那一边其实能把场稳住，热的那一边又让这段关系不至于慢慢凉掉。",
+    stuck: "容易别扭的时候，往往是一个人已经退回去充电，另一个人还在等一句回应。",
+    step: "忙的时候回一句「在，晚一点说」，想靠近的时候也直接说想待多久。",
+    last: "空间不是变淡，回应也不是添乱。两个人都说清楚，这段关系就会松一点。",
+  },
+  "嘴硬 × 心软": {
+    feel: "你们明明都在意，开口却常常要绕一圈。外壳硬，里面其实很软。",
+    keep: "好在你们不是不在乎，只是谁都不想先把那层壳卸下来。",
+    stuck: "卡住的时候，沉默会被当成态度，其实两边都在等对方先松一下。",
+    step: "先说一句「我需要一点时间」，比用沉默把天聊死要有用得多。",
+    last: "先开口不是认输。让这段关系继续，本身就已经很在意了。下次心软的时候，把那句软的说出来就好。",
+  },
+  "猫 × 狗": {
+    feel: "你们靠近彼此的节奏，本来就不一样。一个想凑过来，一个想先自己待着。",
+    keep: "值得留住的是，这种不一样不一定是谁不喜欢谁，只是电量不在同一个时间。",
+    stuck: "容易误会的地方，是一个人的后退被读成拒绝，另一个人的靠近被读成没完。",
+    step: "想待在一起就说，想自己待也说，顺手讲一下大概什么时候再回来。",
+    last: "靠近和自己待着可以轮着来。不用同一秒都做对，说一声就够了。",
+  },
+  "计划 × 随缘": {
+    feel: "你们一个喜欢把事情排好，一个更想走到了再说。两个人看时间的方式不太一样。",
+    keep: "排期的人让关系有着落，随缘的人又让气氛不至于绷得太紧。这其实是一套。",
+    stuck: "别扭常常出在，一个人已经想到下一步，另一个人还停在「现在这样就行」。",
+    step: "计划留一点空白，随缘的那一边至少回一句收到。不必事事都灵魂感应。",
+    last: "一个管方向，一个管别把日子过成表格。说开了，就能一起走。",
+  },
+  "侦探 × 失踪人口": {
+    feel: "你们最容易紧张的，常常是一段还没被说清的空窗。一个人已经在想原因，另一个人只是还没回来。",
+    keep: "在意本身没有错。会注意到对方消失，说明这段关系在你们心里有位置。",
+    stuck: "空窗一拉长，脑内就会自己补剧情。对方要是再不报备，戏就越写越长。",
+    step: "超过平时的节奏还没回，就说一句「我在忙，稍后找你」。先问事实，再写故事。",
+    last: "已读不是结论。一句人话，能省下很多自己吓自己的时间。",
+  },
+  "黏人 × 自由": {
+    feel: "你们一个想待在一起，一个需要自己的时间。陪伴和空间，都是在充电，只是插头不一样。",
+    keep: "两边都没有错。想靠近的人在确认关系还在，想自由的人在把自己电量养回来。",
+    stuck: "容易疼的地方，是一次拒绝见面被听成拒绝这段关系。",
+    step: "见面前先问一句今天有没有电。想自己待，也说清楚这段时间到什么时候结束。",
+    last: "预约陪伴，也预约空间。说清楚，谁都不用为想待着或想走开道歉。",
+  },
+  "理性 × 感性": {
+    feel: "你们一个习惯先把问题拆开，一个更需要先被接住。两个人都想把这件事过完，只是顺序不一样。",
+    keep: "讲得清的人能把线理顺，感受强的人又不会让这件事变成一份冷冰冰的说明。",
+    stuck: "真正容易卡的，是道理来得太快，感受还没落地，听起来就像没被放在心上。",
+    step: "先说「我听到你难受」，再决定要不要给办法。想被听，也可以直接说出来。",
+    last: "解决问题和先接住情绪，可以是前后两句，不必挤在同一秒里。",
+  },
+  "主动 × 被动": {
+    feel: "你们的关系里，开场常常落在一个人身上。另一个人更习惯接，而不是先起这个头。",
+    keep: "有人愿意推进，关系就不容易停在原地。另一边的「都行」，有时也是真的不想把气氛弄僵。",
+    stuck: "方向盘要是一直交回去，主动的人会累，被动的人也会觉得自己好像没被问到真心。",
+    step: "少说一句空的「都行」，多给一个真实偏好。主动的人也可以把选择权还回去一次。",
+    last: "推进和应答可以换手。不用永远是同一个人在开车。",
+  },
+  "社牛 × 社恐": {
+    feel: "你们一个愿意把场打开，一个需要在旁边把电留住。出门这件事，对两个人不是同一种消耗。",
+    keep: "一个负责让场面活起来，一个负责把两个人都安全带回来。这是分工，不是冷淡。",
+    stuck: "容易累的时候，是热闹还没结束，电量先见底的那个人还不好意思说想走。",
+    step: "出门前商量大概待多久。想撤的时候给一个信号，回家以后允许安静一会儿。",
+    last: "有人说话，有人站着，这段关系就已经在一起了。回家可以安静。",
+  },
+  "显眼包 × 低调王": {
+    feel: "你们一个自然站到前面，一个更舒服地待在旁边。热闹和安静，刚好能拼在一块。",
+    keep: "出镜的人把气氛带起来，低调的人把这一天好好记住。谁也不必改行。",
+    stuck: "别扭会出现在，一个人希望对方也站到灯光里，另一个人只想安安静静待着。",
+    step: "出镜的人别催对方表演。低调的人用一件小事回应，就很够。",
+    last: "掌声可以轮流，也可以不轮流。在一起的方式，本来就不必长得一样。",
+  },
+  "情绪雷达 × 情绪木头": {
+    feel: "你们对同一件事的感觉，常常不在一个频道上。一个已经收到信号，另一个根本没觉得自己发射过。",
+    keep: "收得到气氛的人很体贴，不太播报的人也未必是冷。两个人只是读空气的方式不同。",
+    stuck: "「你怎么了」碰上「我没怎么」，很容易变成一个人在猜，一个人在茫然。",
+    step: "与其猜，不如说观察到的变化，比如「你今天话少了」。另一边也试着报一句自己的状态。",
+    last: "说明一下，比把沉默翻译成结论省事得多，也更不容易伤到人。",
+  },
+  "关系项目经理 × 快乐摸鱼王": {
+    feel: "你们一个已经在想下一步，一个还停在这一会儿。节奏差，经常比感情差更明显。",
+    keep: "有人把约定落到时间上，关系才有着落。另一个人让日子不至于每件事都要打卡。",
+    stuck: "容易生气的点，是日程发了没人接，或者人忽然随缘掉线，连一声都没有。",
+    step: "重要的约定回一句收到。摸鱼可以，失联不行。一次只推一件必须落地的事。",
+    last: "计划不是控制，散漫也不是不在乎。对上一次节奏，就够用了。",
+  },
+  "火药桶 × 灭火器": {
+    feel: "你们一个情绪来得快，一个很快就会来收拾场面。火起得快，灭得也快。",
+    keep: "肯把感受直接说出来，是真诚。肯把场面接住，是在护着这段关系。",
+    stuck: "要留神的是，善后的人一次次接住，自己却慢慢烧干了。",
+    step: "点火前停三秒。接不住的时候可以说「我今晚接不住」。复盘留到火小一点以后。",
+    last: "两个人可以轮流当那个灭火的人。不用永远是同一只手在收场。",
+  },
+  "冰山 × 冰山": {
+    feel: "你们都很稳，稳到有时候谁也不先开口。安静可以是舒服，也可以是谁都在等。",
+    keep: "不吵、不逼，本身就是一种照顾。你们给彼此的空间，常常是真的。",
+    stuck: "风险不在谁更激烈，而在一件小事谁都没说，就一直停在那里。",
+    step: "隔一段时间主动开一次头，哪怕只有一句。在意的话要说出来，对方收不到心里的想法。",
+    last: "默契很高也没关系。偶尔有人先说话，这段安静才不会一直停在那里。",
+  },
+  "小太阳 × 小太阳": {
+    feel: "你们在一起的时候，房间很容易变暖。两个人都愿意把热情拿出来。",
+    keep: "这种热是真的。你们都肯对这段关系用力，也不太会让对方觉得自己被晾着。",
+    stuck: "热过了头的时候，谁都不太好意思说自己其实想小一点、静一点。",
+    step: "有人电量低的时候，把活动缩小就好。不必用谁更热闹，来证明谁更在乎。",
+    last: "热情很好，留白也是照顾。给房间开一扇窗，光还在，人也轻松一点。",
+  },
+  "显眼包 × 显眼包": {
+    feel: "你们在一起，气氛很容易被两个人一起推高。好玩是真的，累也可以是真的。",
+    keep: "你们都舍得把场面做活，待在一起不太会无聊。这是这段关系很亮的地方。",
+    stuck: "要是一直加码，谁先想安静，都会显得像在扫兴。",
+    step: "玩的时候确认对方还跟得上。热闹结束以后，一起把声音降下来待一会儿。",
+    last: "好玩可以留着。旁边也给彼此留一条能退开的路，累了就下来歇歇。",
+  },
+  "内耗王 × 安抚王": {
+    feel: "你们一个容易在心里把事情想很远，一个更习惯先把人接住。一个在演内心戏，一个在当现场的人。",
+    keep: "有人愿意听，有人愿意说「我在」，这段关系其实很会照顾人。",
+    stuck: "客服要是一直在线，接住的人会累，想太多的人也会更不好意思停。",
+    step: "担心尽量收成一句问话。安抚的人也可以说今天能陪到什么时候。一句「我在」，常常比长篇有用。",
+    last: "被接住很重要。接住的人也要有下班的时候，这不是变冷。",
+  },
+  "纠结王 × 决策王": {
+    feel: "你们一个还在权衡，一个已经准备拍板。选择这件事，两个人的速度差得比较明显。",
+    keep: "想得细的人让决定不那么莽，拍得了板的人又让事情真的往前走。",
+    stuck: "纠结太久，拍板的人会烦。拍得太快，还在想的人会觉得自己被扔下车。",
+    step: "给犹豫一个很短的时间。选的时候说一句理由就够，选完就走，不必再翻一遍。",
+    last: "想和选可以搭档。别把所有决定都推给同一个人，选完就一起走。",
+  },
+  "记仇王 × 转头忘": {
+    feel: "你们对同一件事的记忆，长短经常不一样。一个人还放在心上，另一个人已经翻篇。",
+    keep: "记得住，说明那件事有重量。忘得快，有时也是不想一直停在不痛快里。",
+    stuck: "没对齐的时候，一个人觉得被轻视，另一个人觉得对方还在翻旧账。",
+    step: "重要的事直接说「这个请记住」。听的人别用「不就是小事」把对方挡回去。谈一次，然后放下。",
+    last: "同一件事可以有两份记忆。要留的，说一声就好，说完就可以放下。",
+  },
+  "主动沟通 × 冷处理": {
+    feel: "你们一个想现在说完，一个想先缓一缓。处理事情的时钟，经常对不上。",
+    keep: "想谈的人是想把关系修好，想缓的人常常也不是要消失，只是当下说不下去。",
+    stuck: "追问越密，退开越远。退开越久，又越像不在乎。",
+    step: "先约一个回来的时间，今晚或明天都可以。暂停的时候不再追着问，到点了就只谈一件事。",
+    last: "现在说和先冷静，可以都成立。关键是对方知道你还会回来，而不是消失。",
+  },
+  "高敏感 × 高稳定": {
+    feel: "你们一个很容易感到气氛变了，一个更习惯先把场稳住。一个在听风声，一个在减震。",
+    keep: "敏感让变化不被漏掉，稳定让变化不至于把两个人都掀翻。叠在一起，其实托得住。",
+    stuck: "要是把敏感叫作作，把稳定叫冷，两边都会觉得自己被看错。",
+    step: "稳的那一边多报两句自己还在。容易想的那一边，把感受说具体，而不是只丢一个气氛。",
+    last: "想得多不是错，稳也不是不在乎。两个人说的，其实是同一种在意。",
+  },
+  "高独立 × 高独立": {
+    feel: "你们都给得了彼此空间，也很容易忘了主动靠近。自由很多，敲门却很少。",
+    keep: "谁也不黏谁，日子可以过得很轻。这种不纠缠，对你们俩都是舒服的。",
+    stuck: "空间给着给着，会不确定对方还想不想约。默契变成了各自过各自的。",
+    step: "隔一段时间主动报个到，哪怕很短。想见面就约一个具体时间，别靠猜。",
+    last: "自由可以留着。偶尔敲一下隔壁，这段关系才还在同一条路上，而不是各走各的。",
+  },
+  "高陪伴 × 高陪伴": {
+    feel: "你们这段关系里，最明显的一点，是彼此都愿意靠近，也都很在意对方有没有把自己放在心上。",
+    keep: "最值得留住的，是你们都舍得为这段关系花时间。想在一起，对你们来说很自然。",
+    stuck: "真正容易别扭的，常常不是谁不够在乎，而是贴得太紧的时候，忘了给彼此留一点喘气的位置。",
+    step: "如果想舒服一点，不用一下子改很多。累了说一声，想安静也讲清楚什么时候回来。",
+    last: "关系不是越黏越好。两个人都舒服的距离，才是你们自己的默契。",
+  },
+  "高抽象 × 高抽象": {
+    feel: "你们聊天的时候，很容易从一件小事说到很远的地方。彼此一点就通，旁边的人未必跟得上。",
+    keep: "这种能飞起来的对话很难得。你们在一起，不太需要把每句话都说死。",
+    stuck: "飞太远的时候，重要的约定会只剩一个彼此懂的眼神，事后又对不上。",
+    step: "梗可以继续玩。要记住的时间、地点和答应，再用一句普通的人话对齐。",
+    last: "聊得很远很好。落地的那一句，是给生活用的，也是给彼此安心的。",
+  },
+};
+
 function summaryOf(input: {
   relationshipName: string;
   wording: WordingStrength;
-  aName: string;
-  bName: string;
-  confidenceScore: number;
-  eligibility: number;
-  indices: IndexDetail[];
   similarities: FactItem[];
-  differences: FactItem[];
-  complements: RelationshipArchive["complements"];
   strengths: StrengthItem[];
   risks: RiskItem[];
-  cycle: ConflictCycle;
-  scenario: CommunicationScenario | undefined;
 }): string {
-  const close = input.wording === "strong"
-    ? "可以把这份结果当成当前稳定的相处说明书。"
+  const voice = CLOSINGS[input.relationshipName] ?? {
+    feel: `你们这段关系里，最明显的感觉是「${input.relationshipName}」。`,
+    keep: input.similarities[0]?.summary || input.strengths[0]?.evidence || "你们愿意把彼此放在心上。",
+    stuck: input.risks[0]?.title && input.risks[0].title !== "目前没有拉开的消耗机制"
+      ? "真正容易卡住的，多半是节奏没说开。"
+      : "真正要留神的，是有些话明明差不多，却谁都没说出口。",
+    step: "可以先从一件很小的事开始。",
+    last: "不用一下子变成另一对人。",
+  };
+  const feel = input.wording === "tentative"
+    ? `${voice.feel}这还不是定论，只是现在最像的感觉。`
     : input.wording === "moderate"
-      ? "可以把它当成当前比较明显的倾向，而不是唯一解释。"
-      : "只能把它当成暂时更接近的结构，不能写成定论。";
-  const rankedIndices = input.indices.slice().sort((left, right) => right.value - left.value);
-  const parts = [
-    `${LEAD[input.wording]}「${input.relationshipName}」。关系分数是${input.confidenceScore}，成立度是${input.eligibility}。`,
-    `A目前更接近${input.aName}，B目前更接近${input.bName}。`,
-    rankedIndices[0] && rankedIndices[1] ? `目前比较突出的是${rankedIndices[0].label}${rankedIndices[0].value}，和${rankedIndices[1].label}${rankedIndices[1].value}。` : "",
-    input.similarities[0] ? `共同点里最清楚的是：${input.similarities[0].explanation ?? input.similarities[0].summary}` : "目前还没有足够突出、偏离中间的共同特质。",
-    input.differences.length > 0 ? `真正拉开的地方是：${input.differences[0]?.summary ?? ""}` : "双方目前没有特别突出的结构性差异，不要把细小数值差写成主要矛盾。",
-    input.complements.aOffers[0] || input.complements.bOffers[0]
-      ? `互补成立的部分：${input.complements.aOffers[0]?.summary ?? ""}${input.complements.bOffers[0]?.summary ?? ""}`
-      : "",
-    input.strengths[0] ? `最大的优势是：${input.strengths[0].explanation}` : "",
-    input.risks[0] ? `最需要看住的是：${input.risks[0].mechanism}` : "",
-    `可以先做的一步是：${input.cycle.breakpoint}`,
-    close,
-  ].filter(Boolean);
-  let text = parts.join("");
-  if (input.differences.length === 0) text = text.replace(/最大的不同是[^。]*。/g, "");
-  if (input.complements.aOffers.length === 0 && input.complements.bOffers.length === 0) text = text.replace(/A能补上[^。]*。/g, "");
-  if (input.cycle.pattern === "low-conflict") text = text.replace(/追问带来沉默[^。]*。/g, "").replace(/一个追[^。]*。/g, "");
-  if (input.risks[0]?.severity === "low") text = text.replace(/最值得优先处理的机制之一/g, "值得留意的轻微倾向");
-  if (text.length < 300) {
-    for (const item of rankedIndices) {
-      if (text.length >= 320) break;
-      text += item.explanation;
-    }
-  }
-  return text.length > 600 ? text.slice(0, 600) : text;
+      ? `${voice.feel}就你们现在的相处看，大概是这样。`
+      : voice.feel;
+  const shared = input.similarities[0]?.explanation ?? input.strengths[0]?.explanation ?? "";
+  const keep = shared.includes("个人边界") && !voice.keep.includes("边界")
+    ? `${voice.keep}你们也都比较在意自己的边界。`
+    : voice.keep;
+  const text = [feel, keep, voice.stuck, `${voice.step}${voice.last}`].join("\n\n");
+  const extra: Record<string, string> = {
+    "嘴硬 × 心软": "硬可以留着，把心里那句软的说出来就好。",
+    "猫 × 狗": "电量不一样，不代表谁比较冷。",
+    "计划 × 随缘": "对上一次节奏，日子就没那么累。",
+    "侦探 × 失踪人口": "先报备一句，戏就写不长。",
+    "黏人 × 自由": "电量说清楚，谁都不用内疚。",
+    "理性 × 感性": "先后顺了，两个人都会松一点。",
+    "社牛 × 社恐": "能一起撤，也是一种默契。",
+    "显眼包 × 低调王": "不用把对方改成自己的样子，在一起就好。",
+    "关系项目经理 × 快乐摸鱼王": "回一句收到，比催十句更有用。",
+    "火药桶 × 灭火器": "轮流收场，谁都不容易把自己烧干，关系也会更稳一点。",
+    "冰山 × 冰山": "先开口的那个人，其实很勇敢。",
+    "小太阳 × 小太阳": "安静一会儿也没关系，热还在，人也不用一直发光。",
+    "显眼包 × 显眼包": "下来歇一下，明天还是可以一起玩，也不必天天加码。",
+    "内耗王 × 安抚王": "下班不等于不管这段关系。",
+    "纠结王 × 决策王": "想清楚一点，就可以一起往前走。",
+    "记仇王 × 转头忘": "对齐之后，就不必再翻一遍。",
+    "主动沟通 × 冷处理": "缓一缓可以，人不要直接消失。",
+    "高敏感 × 高稳定": "把感受说具体，慌就会小一点。",
+    "高独立 × 高独立": "不用天天黏着，也别把对方养成背景音。",
+    "高抽象 × 高抽象": "用一句人话对齐，飞远了也不怕。",
+  };
+  return text.length >= 180 ? text : `${text}${extra[input.relationshipName] ?? "可以先从一件很小的事开始。"}`;
 }
 
 export function explainWhoMore(item: WhoMoreInput): string {
-  const dims = (item.reason?.dimensions ?? []).map((key) => DIMENSION_LABELS[key]).join("、");
-  if (item.tie || item.winner === "tie") return `${item.title}接近，A为${item.aPercent}，B为${item.bPercent}，参考${dims}。`;
-  return `${item.title}里${item.winner === "a" ? "A更高" : "B更高"}，A为${item.aPercent}，B为${item.bPercent}，参考${dims}。`;
+  if (item.tie || item.winner === "tie") return `${item.title}差不多，两边差别不大。`;
+  return `${item.title}里，${item.winner === "a" ? "A" : "B"}更明显一点。`;
 }
 
 export function buildRelationshipArchive(input: {
@@ -1154,18 +1327,9 @@ export function buildRelationshipArchive(input: {
     finalSummary: summaryOf({
       relationshipName: input.relationshipName,
       wording,
-      aName: input.aName,
-      bName: input.bName,
-      confidenceScore: input.score,
-      eligibility: input.eligibility,
-      indices: detailed,
       similarities,
-      differences,
-      complements,
       strengths,
       risks,
-      cycle,
-      scenario: scenarios[0],
     }),
     whoMore,
   };

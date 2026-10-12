@@ -24,7 +24,7 @@ const SCENES: Record<string, SceneContent> = {
       { speaker: "you", text: "真的？" },
       { speaker: "ta", text: "真的。" },
     ],
-    punchline: "很好，一场高质量安静正在加载。",
+    punchline: "很好，这是一场舒服的安静。谁也别急着打破。",
   },
   stubborn_soft: {
     title: "你们最可能出现的场景",
@@ -137,7 +137,7 @@ const SCENES: Record<string, SceneContent> = {
       { speaker: "you", text: "链接我发你了。" },
       { speaker: "ta", text: "哦我滑过去了。" },
     ],
-    punchline: "行程安排 × 随机刷新，请设置已读回执。",
+    punchline: "一个在排时间，一个在随缘。把「收到」说出来就好。",
   },
   powder_extinguisher: {
     title: "你们最可能出现的场景",
@@ -206,7 +206,7 @@ const SCENES: Record<string, SceneContent> = {
       { speaker: "you", text: "就是那件。" },
       { speaker: "ta", text: "我已经忘了。" },
     ],
-    punchline: "一个人存档，一个人清缓存。请定期同步。",
+    punchline: "一个人还记着，一个人已经翻篇。重要的事，说一声要记住。",
   },
   talk_now_later: {
     title: "你们最可能出现的场景",
@@ -236,7 +236,7 @@ const SCENES: Record<string, SceneContent> = {
       { speaker: "you", text: "也还行。" },
       { speaker: "ta", text: "那就好。" },
     ],
-    punchline: "自由充足。偶尔主动报个到，平行宇宙才能相交。",
+    punchline: "自由很充足。偶尔主动报个到，两个安静的世界才会碰上。",
   },
   together_together: {
     title: "你们最可能出现的场景",
@@ -246,7 +246,7 @@ const SCENES: Record<string, SceneContent> = {
       { speaker: "you", text: "那我跟你。" },
       { speaker: "ta", text: "厨房离客厅七步。" },
     ],
-    punchline: "连体婴文学成立。请给水壶一点独处时间。",
+    punchline: "太习惯黏在一起了。水壶也需要一点自己的时间。",
   },
   abstract_abstract: {
     title: "你们最可能出现的场景",
@@ -256,7 +256,7 @@ const SCENES: Record<string, SceneContent> = {
       { speaker: "you", text: "对对对。" },
       { speaker: "system", text: "在场第三个人：我可以走了吗？" },
     ],
-    punchline: "梗密度超标。这是天赋。",
+    punchline: "你们聊着聊着就会飞走。好玩，也记得落地。",
   },
 };
 
@@ -265,7 +265,7 @@ const ROASTS: Record<string, string> = {
   stubborn_soft: "你们不是不在意，是都在等对方先把壳卸下来。",
   cat_dog: "一个疯狂靠近，一个礼貌后退。这不是拒绝，是电量管理。",
   plan_go_with_flow: "一个人已经把下一步排好，另一个人还停留在「有下一步吗」。",
-  detective_missing: "一个负责推理，一个负责失踪。建议把「在忙」设成快捷回复。",
+  detective_missing: "一个负责推理，一个负责失踪。一句「我在忙」，能少写很多内心戏。",
   clingy_free: "陪伴需求碰上自由需求。谁也不该道歉，但要说清楚什么时候见。",
   rational_emotional: "讲道理很有用，但别在对方还没落地的时候讲。",
   active_passive: "一个负责开场，一个负责都可以。方向盘别一直让来让去。",

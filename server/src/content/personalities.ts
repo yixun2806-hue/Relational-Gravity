@@ -206,7 +206,7 @@ export const PERSONALITY_TYPES: PersonalityTypeDef[] = [
     id: "brain_drift",
     name: "脑回路漂移王",
     tagline: "话题能从晚饭跳到宇宙",
-    summary: "思维跳跃、梗密度高。和你聊天像随机传送，跟得上的人会上瘾。",
+    summary: "思维跳得很快。聊天可以从一件小事说到很远的地方，跟得上的人会觉得很过瘾。",
     prototype: p({
       abstract: 94,
       novelty: 82,

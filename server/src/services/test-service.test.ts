@@ -194,8 +194,8 @@ describe("phase 2 perspective", () => {
     const stored = report.finalSummary;
     const view = mapFull(report, false);
     expect(view.reportVersion).toEqual({ kind: "v2", version: 2 });
-    expect(view.finalSummary).toContain("你目前更接近");
-    expect(view.finalSummary).toContain("TA目前更接近");
+    expect(view.finalSummary).not.toMatch(/关系分数|成立度|A目前更接近|B目前更接近/);
+    expect(view.finalSummary.length).toBeGreaterThan(80);
     expect(view.differences?.[0]?.aValue).toBe(report.differences[0]?.bValue);
     expect(view.conflictCycle?.yourFirstReaction).toContain("你");
     expect(view.adviceForYou?.[0]).toContain("你");

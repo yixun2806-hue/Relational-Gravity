@@ -1,5 +1,6 @@
 import { randomInt, timingSafeEqual } from "node:crypto";
 import { Prisma } from "@prisma/client";
+import { RELATIONSHIP_BY_ID, RELATIONSHIP_TYPES } from "../content/relationships.js";
 import { prisma } from "../db.js";
 import { AppError, ErrorCodes } from "../utils/errors.js";
 
@@ -136,6 +137,18 @@ export function parseOverviewDays(value: unknown) {
   return 30;
 }
 
+export function parseRelationshipDays(value: unknown) {
+  if (value === undefined || value === null || value === "") return 30;
+  const days = typeof value === "number" ? value : Number(value);
+  if (!Number.isInteger(days) || days < 1 || days > 365) return 30;
+  return days;
+}
+
+export function relationshipSharePercent(count: number, total: number) {
+  if (total <= 0 || count <= 0) return 0;
+  return Math.round((count / total) * 10000) / 100;
+}
+
 export function parseBasicCredentials(header?: string) {
   if (!header?.startsWith("Basic ")) return null;
   try {
@@ -220,9 +233,22 @@ function indexStats(rows: AgentStatRow[]) {
   return new Map(rows.filter((row) => row.agentId).map((row) => [row.agentId as string, row]));
 }
 
+export async function purgeDeletedAgents() {
+  const deleted = await prisma.agent.findMany({
+    where: { deletedAt: { not: null } },
+    select: { id: true },
+  });
+  if (!deleted.length) return { agents: 0, codes: 0 };
+  const ids = deleted.map((item) => item.id);
+  const removed = await prisma.reportAccessCode.deleteMany({ where: { agentId: { in: ids } } });
+  const agents = await prisma.agent.deleteMany({ where: { id: { in: ids } } });
+  return { agents: agents.count, codes: removed.count };
+}
+
 export async function listAgents() {
+  await purgeDeletedAgents();
   const [agents, totals, unused] = await Promise.all([
-    prisma.agent.findMany({ orderBy: { createdAt: "desc" } }),
+    prisma.agent.findMany({ where: { deletedAt: null }, orderBy: { createdAt: "desc" } }),
     prisma.reportAccessCode.groupBy({
       by: ["agentId"],
       where: { agentId: { not: null } },
@@ -272,7 +298,20 @@ export async function getAgentInventorySummary() {
   };
 }
 
+export async function releaseUnassignedAccessCodes() {
+  const rows = await prisma.reportAccessCode.findMany({
+    where: { agentId: null },
+    select: { id: true, code: true },
+  });
+  const ids = rows.filter((row) => /^\d{6}$/.test(row.code)).map((row) => row.id);
+  if (!ids.length) return 0;
+  const released = await prisma.reportAccessCode.deleteMany({ where: { id: { in: ids } } });
+  return released.count;
+}
+
 export async function getAdminOverview(daysInput?: unknown) {
+  await purgeDeletedAgents();
+  await releaseUnassignedAccessCodes();
   const days = parseOverviewDays(daysInput);
   const dayKeys = recentDayKeys(days);
   const weekKeys = recentDayKeys(7);
@@ -288,7 +327,6 @@ export async function getAdminOverview(daysInput?: unknown) {
     usedCodes,
     unusedCodes,
     assignedUnused,
-    unassigned,
     totalUseAgg,
     inventory,
     priceFen,
@@ -300,7 +338,6 @@ export async function getAdminOverview(daysInput?: unknown) {
     prisma.reportAccessCode.count({ where: { useCount: { gt: 0 } } }),
     prisma.reportAccessCode.count({ where: { useCount: 0 } }),
     prisma.reportAccessCode.count({ where: { agentId: { not: null }, useCount: 0 } }),
-    prisma.reportAccessCode.count({ where: { agentId: null, useCount: 0 } }),
     prisma.reportAccessCode.aggregate({ _sum: { useCount: true, priceFen: true }, where: { useCount: { gt: 0 } } }),
     getAgentInventorySummary(),
     getCodePriceFen(),
@@ -310,7 +347,7 @@ export async function getAdminOverview(daysInput?: unknown) {
         FROM users u
         WHERE u.access_role = 'buyer' AND u.access_code_id IS NOT NULL
         UNION ALL
-        SELECT NULLIF(e.properties->>'accessCodeId', '')::uuid AS code_id, e.created_at AS used_at
+        SELECT NULLIF(e.properties->>'accessCodeId', '') AS code_id, e.created_at AS used_at
         FROM events e
         WHERE e.event_name IN ('purchase_redeemed', 'access_code_used')
           AND NULLIF(e.properties->>'accessCodeId', '') IS NOT NULL
@@ -348,7 +385,7 @@ export async function getAdminOverview(daysInput?: unknown) {
         FROM users u
         WHERE u.access_role = 'buyer' AND u.access_code_id IS NOT NULL
         UNION ALL
-        SELECT NULLIF(e.properties->>'accessCodeId', '')::uuid,
+        SELECT NULLIF(e.properties->>'accessCodeId', ''),
                e.created_at,
                COALESCE(NULLIF(e.properties->>'source', ''), CASE WHEN e.event_name = 'purchase_redeemed' THEN 'full_report' ELSE e.event_name END)
         FROM events e
@@ -386,15 +423,15 @@ export async function getAdminOverview(daysInput?: unknown) {
     ? await prisma.agent.findMany({ where: { id: { in: agentIds } }, select: { id: true, name: true, deletedAt: true } })
     : [];
   const agentMap = new Map(agentsMeta.map((item) => [item.id, item]));
-  const treemapTotal = usedByAgent.reduce((sum, row) => sum + row._count._all, 0);
-  const usageByAgent = usedByAgent
+  const assignedUsage = usedByAgent.filter((row) => row.agentId && agentMap.has(row.agentId));
+  const treemapTotal = assignedUsage.reduce((sum, row) => sum + row._count._all, 0);
+  const usageByAgent = assignedUsage
     .map((row) => {
-      const agent = row.agentId ? agentMap.get(row.agentId) : null;
-      const name = agent ? agentDisplayName(agent.name, Boolean(agent.deletedAt)) : "未分配";
+      const agent = agentMap.get(row.agentId as string)!;
       const value = row._count._all;
       return {
         id: row.agentId,
-        name,
+        name: agentDisplayName(agent.name, Boolean(agent.deletedAt)),
         value,
         uses: row._sum.useCount ?? 0,
         pct: treemapTotal ? `${((value / treemapTotal) * 100).toFixed(1)}%` : "0.0%",
@@ -405,8 +442,7 @@ export async function getAdminOverview(daysInput?: unknown) {
 
   const statusItems = [
     { name: "已使用", value: usedCodes, color: "#f0a04b" },
-    { name: "已分配未使用", value: assignedUnused, color: "#2f7cf6" },
-    { name: "未分配", value: unassigned, color: "#34c759" },
+    { name: "未使用", value: assignedUnused, color: "#2f7cf6" },
   ].map((item) => ({
     ...item,
     pct: codeTotal ? `${((item.value / codeTotal) * 100).toFixed(2)}%` : "0.00%",
@@ -441,7 +477,6 @@ export async function getAdminOverview(daysInput?: unknown) {
       assignedUnused,
       capacity: ACCESS_CODE_CAPACITY,
       remaining: remainingAccessCodes(codeTotal),
-      unassigned,
     },
     dailyUsage: dailyUsage.map(({ day, codes }) => ({ day, codes })),
     weeklyStats: weeklyStats.map(({ day, codes, fen }) => ({
@@ -464,7 +499,7 @@ export async function getAdminOverview(daysInput?: unknown) {
         hour12: false,
       }).format(item.used_at).replace(/\//g, "-"),
       code: item.code,
-      agent: item.agent_name ? agentDisplayName(item.agent_name, Boolean(item.agent_deleted)) : "未分配",
+      agent: item.agent_name ? agentDisplayName(item.agent_name, Boolean(item.agent_deleted)) : "—",
       status: "已使用",
       source: item.source,
     })),
@@ -482,6 +517,55 @@ export async function getAdminOverview(daysInput?: unknown) {
       lowStockCount: inventory.lowStockCount,
       agents: inventory.agents,
     },
+  };
+}
+
+export async function getAdminRelationshipDistribution(daysInput?: unknown, now = new Date()) {
+  const days = parseRelationshipDays(daysInput);
+  const dayKeys = recentDayKeys(days, now);
+  const rangeStart = dayKeys[0]!;
+  const rangeEnd = dayKeys.at(-1)!;
+  const start = new Date(`${rangeStart}T00:00:00+08:00`);
+  const end = new Date(`${rangeEnd}T00:00:00+08:00`);
+  end.setTime(end.getTime() + 86_400_000);
+  const grouped = await prisma.relationshipResult.groupBy({
+    by: ["relationshipType"],
+    where: { createdAt: { gte: start, lt: end } },
+    _count: { _all: true },
+  });
+  const counts = new Map<string, number>();
+  let ignoredUnknownCount = 0;
+  for (const row of grouped) {
+    const count = Math.max(0, Math.trunc(Number(row._count._all) || 0));
+    if (!RELATIONSHIP_BY_ID[row.relationshipType]) {
+      ignoredUnknownCount += count;
+      continue;
+    }
+    counts.set(row.relationshipType, (counts.get(row.relationshipType) ?? 0) + count);
+  }
+  const knownTotal = [...counts.values()].reduce((sum, count) => sum + count, 0);
+  const totalCompletedTests = knownTotal + ignoredUnknownCount;
+  const items = RELATIONSHIP_TYPES.map((type) => {
+    const count = counts.get(type.id) ?? 0;
+    return {
+      typeId: type.id,
+      code: type.code,
+      name: type.name,
+      count,
+      pct: relationshipSharePercent(count, totalCompletedTests),
+    };
+  }).sort((left, right) => right.count - left.count || left.code.localeCompare(right.code));
+  const topType = items[0] && items[0].count > 0 ? items[0] : null;
+  const top5Count = items.slice(0, 5).reduce((sum, item) => sum + item.count, 0);
+  return {
+    days,
+    range: { start: rangeStart, end: rangeEnd },
+    totalCompletedTests,
+    distinctTypes: items.filter((item) => item.count > 0).length,
+    topType,
+    top5Pct: relationshipSharePercent(top5Count, totalCompletedTests),
+    ignoredUnknownCount,
+    items,
   };
 }
 
@@ -521,12 +605,11 @@ export async function deleteAgent(id: string) {
   const agent = await requireAgent(id);
   if (agent.deletedAt) throw new AppError(ErrorCodes.NOT_FOUND, "代理人已删除", 404);
   const released = await prisma.$transaction(async (tx) => {
-    const unused = await tx.reportAccessCode.updateMany({
-      where: { agentId: id, useCount: 0 },
-      data: { agentId: null },
+    const removed = await tx.reportAccessCode.deleteMany({
+      where: { agentId: id },
     });
-    await tx.agent.update({ where: { id }, data: { deletedAt: new Date() } });
-    return unused.count;
+    await tx.agent.delete({ where: { id } });
+    return removed.count;
   });
   return { id, released };
 }
@@ -589,12 +672,16 @@ export async function listAccessCodes(input: {
   page: number;
   pageSize: number;
 }) {
-  const where: Prisma.ReportAccessCodeWhereInput = {};
+  await purgeDeletedAgents();
+  await releaseUnassignedAccessCodes();
+  const where: Prisma.ReportAccessCodeWhereInput = {
+    agentId: { not: null },
+    agent: { deletedAt: null },
+  };
   if (input.query) where.code = { contains: input.query };
   if (input.status === "active") where.isActive = true;
   if (input.status === "disabled") where.isActive = false;
-  if (input.agentId === "unassigned") where.agentId = null;
-  else if (input.agentId) where.agentId = input.agentId;
+  if (input.agentId) where.agentId = input.agentId;
   if (input.usage === "unused") where.useCount = 0;
   if (input.usage === "used") where.useCount = { gt: 0 };
   if (input.usage === "frequent") where.useCount = { gte: FREQUENT_USE_THRESHOLD };
@@ -682,9 +769,13 @@ export async function setAccessCodeActive(id: string, isActive: boolean) {
 }
 
 export async function listCodesForExport(agentId?: string) {
-  const where: Prisma.ReportAccessCodeWhereInput = {};
-  if (agentId === "unassigned") where.agentId = null;
-  else if (agentId) where.agentId = agentId;
+  await purgeDeletedAgents();
+  await releaseUnassignedAccessCodes();
+  const where: Prisma.ReportAccessCodeWhereInput = {
+    agentId: { not: null },
+    agent: { deletedAt: null },
+  };
+  if (agentId) where.agentId = agentId;
   return prisma.reportAccessCode.findMany({
     where,
     orderBy: { createdAt: "desc" },
